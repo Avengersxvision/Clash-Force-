@@ -40,7 +40,7 @@
 
         .bento-wrapper {
             position: relative; width: 320px; height: 320px;
-            cursor: pointer; transition: transform 0.5s;
+            cursor: pointer;
         }
 
         /* The Lid */
@@ -49,7 +49,7 @@
             background: var(--box-outer); border-radius: 25px;
             z-index: 10; display: flex; justify-content: center;
             align-items: center; box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
-            transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transition: all 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             border: 6px solid #fff; box-sizing: border-box;
         }
 
@@ -57,7 +57,7 @@
         .lid-text { font-family: 'Sacramento', cursive; font-size: 2.8rem; color: #fff; margin: 0; }
         .lid-sub { font-size: 0.8rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* Interior */
+        /* Interior Tray */
         .tray {
             position: absolute; width: 100%; height: 100%;
             background: #fff; border-radius: 25px;
@@ -70,7 +70,7 @@
         .compartment {
             background: #fff5f7; border-radius: 15px;
             display: flex; justify-content: center; align-items: center;
-            font-size: 45px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 45px; transition: transform 0.2s;
             border: 2px dashed #ffccd5;
         }
 
@@ -79,7 +79,7 @@
         /* Message Overlay */
         #msg-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.95); border-radius: 25px;
+            background: rgba(255, 255, 255, 0.98); border-radius: 25px;
             z-index: 20; display: none; flex-direction: column;
             justify-content: center; align-items: center;
             text-align: center; padding: 25px; box-sizing: border-box;
@@ -94,15 +94,19 @@
 
         .msg-text { color: var(--choco); font-weight: 600; line-height: 1.5; font-size: 1.1rem; }
         .back-btn {
-            margin-top: 20px; padding: 8px 20px; font-size: 14px;
+            margin-top: 20px; padding: 10px 25px; font-size: 14px;
             background: var(--accent); color: white; border: none;
-            border-radius: 25px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+            border-radius: 25px; cursor: pointer; font-weight: 600;
         }
 
         .lifted { transform: translateY(-130%) rotate(10deg); opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.chosic.com/wp-content/uploads/2021/07/Rainy-Day-Romantic-Piano.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="container">
         <div id="heart-spawn"></div>
@@ -125,7 +129,7 @@
                 
                 <div id="msg-overlay">
                     <p class="msg-text" id="active-msg"></p>
-                    <button class="back-btn" onclick="closeMsg()">Try Another? ✨</button>
+                    <button class="back-btn" onclick="closeMsg()">Eat Another? ✨</button>
                 </div>
             </div>
         </div>
@@ -134,7 +138,6 @@
     </div>
 
     <script>
-        // 30 Unique Flirty/Romantic Messages
         const messages = [
             "Jia, you're the only 'sweet' I need in my life. ❤️",
             "Warning: Megh is 100% addicted to you.",
@@ -169,15 +172,17 @@
         ];
 
         let unusedMessages = [...messages];
+        const music = document.getElementById('bg-music');
 
         function openBox() {
             document.getElementById('lid').classList.add('lifted');
             document.getElementById('instruction').innerText = "Pick a treat, Jia!";
+            // Start the romantic music
+            music.play().catch(error => console.log("Audio play blocked until interaction"));
         }
 
         function popMessage() {
             if (unusedMessages.length === 0) unusedMessages = [...messages];
-            
             const randomIndex = Math.floor(Math.random() * unusedMessages.length);
             const msg = unusedMessages.splice(randomIndex, 1)[0];
             
@@ -189,7 +194,6 @@
             document.getElementById('msg-overlay').style.display = 'none';
         }
 
-        // Create background hearts
         function createHearts() {
             const container = document.getElementById('heart-spawn');
             for(let i=0; i<15; i++) {
