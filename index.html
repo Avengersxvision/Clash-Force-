@@ -3,228 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chocolate Day | For Jia ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&family=Pacifico&display=swap" rel="stylesheet">
+    <title>For Jia ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Mr+Dafoe&display=swap" rel="stylesheet">
     <style>
         :root {
-            --choco-dark: #3e2723;
-            --choco-milk: #5d4037;
-            --bg-cream: #fff8e1;
+            --glow: #fff0f5;
+            --accent: #ff0055;
         }
 
         body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-cream);
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #050505;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        /* The Gooey Chocolate Pot Area */
-        .stage {
-            position: relative;
-            width: 100%; height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: space-around;
-            background: radial-gradient(circle, #fff8e1 0%, #ffecb3 100%);
+        #canvas-container {
+            position: relative; width: 100%; height: 100vh;
+            background: radial-gradient(circle at center, #1a0a1a 0%, #050505 100%);
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .header {
-            text-align: center; z-index: 10;
-            font-family: 'Pacifico', cursive;
-            color: var(--choco-dark); margin-top: 20px;
+        .instruction {
+            position: absolute; top: 20px; width: 100%; text-align: center;
+            color: white; font-weight: 200; letter-spacing: 4px;
+            text-transform: uppercase; font-size: 0.8rem; opacity: 0.6;
+            pointer-events: none; z-index: 10;
         }
 
-        /* The Pot & Chocolate Blobs */
-        .pot-container {
-            position: relative; width: 250px; height: 250px;
-            filter: url('#goo'); /* Applying the Gooey Filter */
+        /* The Neon Message */
+        #final-message {
+            position: absolute; opacity: 0; text-align: center;
+            transition: opacity 2s ease-in-out; pointer-events: none; z-index: 5;
         }
 
-        .pot-base {
-            position: absolute; bottom: 0; width: 250px; height: 120px;
-            background: var(--choco-dark); border-radius: 0 0 100px 100px;
-            z-index: 2;
+        .main-wish {
+            font-family: 'Mr Dafoe', cursive;
+            font-size: clamp(3rem, 15vw, 6rem);
+            color: var(--glow);
+            text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent);
+            margin: 0;
         }
 
-        .blob {
-            position: absolute; background: var(--choco-dark);
-            border-radius: 50%; bottom: 80px; left: 50%;
-            transform: translateX(-50%);
-            animation: bubble 4s infinite ease-in-out;
+        .tagline {
+            color: white; letter-spacing: 5px; font-size: 0.7rem; margin-top: -10px;
         }
 
-        @keyframes bubble {
-            0%, 100% { width: 180px; height: 100px; bottom: 80px; }
-            50% { width: 200px; height: 120px; bottom: 90px; }
+        /* The Stars/Lanterns */
+        .star {
+            position: absolute; width: 15px; height: 15px;
+            background: rgba(255, 255, 255, 0.1); border-radius: 50%;
+            cursor: pointer; box-shadow: 0 0 5px rgba(255,255,255,0);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
         }
 
-        /* Items to Dip */
-        .items-shelf {
-            display: flex; gap: 20px; z-index: 20;
-            padding-bottom: 50px;
+        .star.lit {
+            background: #fff;
+            box-shadow: 0 0 20px #fff, 0 0 40px var(--accent);
+            transform: scale(1.5);
         }
 
-        .dippable {
-            font-size: 50px; cursor: grab; transition: transform 0.2s;
-            user-select: none; touch-action: none;
-        }
-
-        .dippable:active { cursor: grabbing; }
-
-        /* The Secret Note Reveal */
-        #reveal-overlay {
-            display: none; position: fixed; top: 0; left: 0; 
-            width: 100%; height: 100%; background: rgba(62, 39, 35, 0.95);
-            z-index: 100; flex-direction: column; align-items: center;
-            justify-content: center; text-align: center; padding: 20px;
-            animation: fadeIn 1s forwards;
-        }
-
-        .dripping-text {
-            font-family: 'Dancing Script', cursive;
-            color: #fff; font-size: 3rem;
-            text-shadow: 2px 8px 10px rgba(0,0,0,0.5);
-            animation: drip 2s ease-in-out infinite;
-        }
-
-        @keyframes drip {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .btn-restart {
-            margin-top: 40px; padding: 10px 25px;
-            border: 2px solid #fff; background: transparent;
-            color: #fff; border-radius: 50px; cursor: pointer;
+        /* Heart formation animation */
+        .heart-pos {
+            transition: all 1.5s ease-in-out !important;
         }
     </style>
 </head>
 <body>
 
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
-        <defs>
-            <filter id="goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-            </filter>
-        </defs>
-    </svg>
-
-    <div class="stage">
-        <div class="header">
-            <h1>Happy Chocolate Day</h1>
-            <p>Dip an item into the pot for a surprise!</p>
-        </div>
-
-        <div class="pot-container" id="pot">
-            <div class="blob"></div>
-            <div class="pot-base"></div>
-        </div>
-
-        <div class="items-shelf">
-            <div class="dippable" id="item1" draggable="true">🍓</div>
-            <div class="dippable" id="item2" draggable="true">☁️</div>
-            <div class="dippable" id="item3" draggable="true">🍪</div>
-            <div class="dippable" id="secret-note" draggable="true" style="filter: hue-rotate(280deg);">💌</div>
+    <div id="canvas-container">
+        <div class="instruction">Tap the stars to light up Jia's world</div>
+        
+        <div id="final-message">
+            <h1 class="main-wish">Happy Propose Day</h1>
+            <p class="tagline">YOU ARE MY BRIGHTEST STAR</p>
         </div>
     </div>
-
-    <div id="reveal-overlay">
-        <h2 class="dripping-text" id="wish-text"></h2>
-        <p style="color: #ffecb3; margin-top: 20px; font-style: italic;" id="sub-wish"></p>
-        <button class="btn-restart" onclick="location.reload()">Dip Again? 🍫</button>
-    </div>
-
-    <audio id="bg-music" loop>
-        <source src="https://www.dropbox.com/scl/fi/w16g40ks5nndtslzcy32i/Pehle-Bhi-Main-Animal-320-Kbps.mp3?rlkey=9jqp0661cz5w9xry64fhql868&st=99q2rg50&raw=1" type="audio/mpeg">
-    </audio>
 
     <script>
-        const items = document.querySelectorAll('.dippable');
-        const pot = document.getElementById('pot');
-        const music = document.getElementById('bg-music');
-        let musicStarted = false;
+        const container = document.getElementById('canvas-container');
+        const message = document.getElementById('final-message');
+        const totalStars = 12;
+        let litCount = 0;
 
-        // Interaction Logic
-        items.forEach(item => {
-            item.addEventListener('touchstart', handleStart);
-            item.addEventListener('touchmove', handleMove);
-            item.addEventListener('touchend', handleEnd);
-            
-            // For Desktop
-            item.onmousedown = function(event) {
-                let shiftX = event.clientX - item.getBoundingClientRect().left;
-                let shiftY = event.clientY - item.getBoundingClientRect().top;
+        // Coordinates for a heart shape (scaled to viewport)
+        const heartPoints = [
+            { x: 50, y: 40 }, { x: 35, y: 30 }, { x: 20, y: 40 }, { x: 20, y: 60 },
+            { x: 50, y: 85 }, { x: 80, y: 60 }, { x: 80, y: 40 }, { x: 65, y: 30 },
+            { x: 50, y: 55 }, { x: 35, y: 50 }, { x: 65, y: 50 }, { x: 50, y: 70 }
+        ];
 
-                document.body.append(item);
-                item.style.position = 'absolute';
-                item.style.zIndex = 1000;
-
-                moveAt(event.pageX, event.pageY);
-
-                function moveAt(pageX, pageY) {
-                    item.style.left = pageX - shiftX + 'px';
-                    item.style.top = pageY - shiftY + 'px';
-                }
-
-                function onMouseMove(event) {
-                    moveAt(event.pageX, event.pageY);
-                    checkDip(item);
-                }
-
-                document.addEventListener('mousemove', onMouseMove);
-
-                item.onmouseup = function() {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    item.onmouseup = null;
-                };
-            };
-        });
-
-        function handleStart(e) { if (!musicStarted) { music.play(); musicStarted = true; } }
-        
-        function handleMove(e) {
-            const touch = e.touches[0];
-            const item = e.target;
-            item.style.position = 'absolute';
-            item.style.left = touch.pageX - 25 + 'px';
-            item.style.top = touch.pageY - 25 + 'px';
-            checkDip(item);
-        }
-
-        function handleEnd(e) { /* Snap back logic if needed */ }
-
-        function checkDip(item) {
-            const potRect = pot.getBoundingClientRect();
-            const itemRect = item.getBoundingClientRect();
-
-            // If item is over the pot
-            if (itemRect.left < potRect.right &&
-                itemRect.right > potRect.left &&
-                itemRect.top < potRect.bottom &&
-                itemRect.bottom > potRect.top + 50) {
+        function createStars() {
+            for (let i = 0; i < totalStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
                 
-                triggerReveal(item.id);
+                // Random initial positions
+                star.style.left = Math.random() * 80 + 10 + "%";
+                star.style.top = Math.random() * 80 + 10 + "%";
+
+                star.addEventListener('touchstart', function(e) { e.preventDefault(); lightStar(star); });
+                star.addEventListener('click', () => lightStar(star));
+
+                container.appendChild(star);
             }
         }
 
-        function triggerReveal(id) {
-            const overlay = document.getElementById('reveal-overlay');
-            const wish = document.getElementById('wish-text');
-            const sub = document.getElementById('sub-wish');
+        function lightStar(star) {
+            if (!star.classList.contains('lit')) {
+                star.classList.add('lit');
+                litCount++;
 
-            overlay.style.display = 'flex';
-
-            if (id === 'secret-note') {
-                wish.innerText = "You're My Sweetest Addiction";
-                sub.innerText = "This chocolate is sweet, but it's nothing compared to you. Stay mine? ❤️";
-            } else {
-                wish.innerText = "Sweetened with Love";
-                sub.innerText = "Every dip makes life a little more delicious with you, Jia.";
+                if (litCount === totalStars) {
+                    revealHeart();
+                }
             }
         }
+
+        function revealHeart() {
+            const stars = document.querySelectorAll('.star');
+            const instruction = document.querySelector('.instruction');
+            instruction.style.opacity = '0';
+
+            stars.forEach((star, index) => {
+                star.classList.add('heart-pos');
+                // Move stars to the heart coordinates
+                star.style.left = heartPoints[index].x + "%";
+                star.style.top = heartPoints[index].y + "%";
+                
+                // Pulsing effect
+                star.style.animation = `pulse 2s infinite ${index * 0.1}s`;
+            });
+
+            // Show the neon text
+            setTimeout(() => {
+                message.style.opacity = '1';
+            }, 1000);
+        }
+
+        // Add keyframes for pulsing stars
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1.5); opacity: 1; }
+                50% { transform: scale(2); opacity: 0.7; box-shadow: 0 0 30px var(--accent); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        createStars();
     </script>
 </body>
 </html>
