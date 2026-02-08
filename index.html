@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chocolate Day | For Jia ❤️</title>
+    <title>For My Jia ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;600&family=Sacramento&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #fff5f5;
-            --box-outer: #ffccd5;
-            --box-inner: #fff;
-            --choco: #6d4c41;
-            --accent: #ff8fa3;
+            --bg: #fff0f3;
+            --box-outer: #ffb3c1;
+            --choco: #4e342e;
+            --accent: #ff4d6d;
         }
 
         body, html {
@@ -20,119 +19,189 @@
             font-family: 'Quicksand', sans-serif;
         }
 
+        /* Floating Hearts Background */
+        .heart-bg {
+            position: absolute; color: var(--accent); opacity: 0.2;
+            font-size: 20px; animation: floatUp 6s infinite linear;
+            z-index: 0; pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+
         .container {
             width: 100%; height: 100vh;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
+            z-index: 10; position: relative;
         }
 
-        /* The Box Container */
         .bento-wrapper {
-            position: relative; width: 300px; height: 300px;
-            cursor: pointer; perspective: 1000px;
+            position: relative; width: 320px; height: 320px;
+            cursor: pointer; transition: transform 0.5s;
         }
 
         /* The Lid */
         .lid {
             position: absolute; width: 100%; height: 100%;
-            background: var(--box-outer); border-radius: 20px;
+            background: var(--box-outer); border-radius: 25px;
             z-index: 10; display: flex; justify-content: center;
-            align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 8px solid #fff; box-sizing: border-box;
+            align-items: center; box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border: 6px solid #fff; box-sizing: border-box;
         }
 
-        .lid-text {
-            font-family: 'Sacramento', cursive;
-            font-size: 2.5rem; color: #ff4d6d; text-align: center;
-        }
+        .lid-content { text-align: center; }
+        .lid-text { font-family: 'Sacramento', cursive; font-size: 2.8rem; color: #fff; margin: 0; }
+        .lid-sub { font-size: 0.8rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* The Tray Inside */
+        /* Interior */
         .tray {
             position: absolute; width: 100%; height: 100%;
-            background: var(--box-inner); border-radius: 20px;
+            background: #fff; border-radius: 25px;
             display: grid; grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr; padding: 15px;
-            box-sizing: border-box; gap: 10px;
+            grid-template-rows: 1fr 1fr; padding: 20px;
+            box-sizing: border-box; gap: 15px;
             border: 4px solid var(--box-outer);
         }
 
         .compartment {
-            background: #fffafa; border-radius: 12px;
+            background: #fff5f7; border-radius: 15px;
             display: flex; justify-content: center; align-items: center;
-            font-size: 40px; transition: transform 0.3s ease;
-            position: relative;
+            font-size: 45px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px dashed #ffccd5;
         }
 
-        .compartment:hover { transform: scale(1.05); }
+        .compartment:active { transform: scale(0.9); }
 
-        /* Pop-up Message */
+        /* Message Overlay */
         #msg-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.9); border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95); border-radius: 25px;
             z-index: 20; display: none; flex-direction: column;
             justify-content: center; align-items: center;
-            text-align: center; padding: 20px; box-sizing: border-box;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center; padding: 25px; box-sizing: border-box;
+            animation: bounceIn 0.5s;
         }
 
-        @keyframes popIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        .msg-text { color: var(--choco); font-weight: 600; line-height: 1.4; }
-
+        .msg-text { color: var(--choco); font-weight: 600; line-height: 1.5; font-size: 1.1rem; }
         .back-btn {
-            margin-top: 15px; padding: 5px 15px; font-size: 12px;
+            margin-top: 20px; padding: 8px 20px; font-size: 14px;
             background: var(--accent); color: white; border: none;
-            border-radius: 20px; cursor: pointer;
+            border-radius: 25px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
         }
 
-        /* Lift the lid animation */
-        .lifted { transform: translateY(-120%) rotateX(20deg); opacity: 0; pointer-events: none; }
+        .lifted { transform: translateY(-130%) rotate(10deg); opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <p style="color: var(--accent); letter-spacing: 2px; margin-bottom: 20px; font-weight: 600;">FOR MY SWEETEST JIA</p>
+        <div id="heart-spawn"></div>
+
+        <p style="color: var(--accent); letter-spacing: 3px; margin-bottom: 25px; font-weight: 600; font-size: 0.9rem;">SWEET SURPRISE FOR JIA</p>
         
         <div class="bento-wrapper">
             <div class="lid" id="lid" onclick="openBox()">
-                <div class="lid-text">Handcrafted<br>for You</div>
+                <div class="lid-content">
+                    <p class="lid-text">Handcrafted</p>
+                    <p class="lid-sub">by Megh</p>
+                </div>
             </div>
 
             <div class="tray">
-                <div class="compartment" onclick="showMsg('My life is sweet, but it would be nothing without you. ❤️')">💝</div>
-                <div class="compartment" onclick="showMsg('You are like dark chocolate—intense, deep, and totally addictive. 😉')">🍫</div>
-                <div class="compartment" onclick="showMsg('Can I have you as my dessert forever? Happy Chocolate Day! 😘')">🧸</div>
-                <div class="compartment" onclick="showMsg('One bite is never enough when it comes to your love. ✨')">🍩</div>
+                <div class="compartment" onclick="popMessage()">🍫</div>
+                <div class="compartment" onclick="popMessage()">🎀</div>
+                <div class="compartment" onclick="popMessage()">🍓</div>
+                <div class="compartment" onclick="popMessage()">💌</div>
                 
                 <div id="msg-overlay">
                     <p class="msg-text" id="active-msg"></p>
-                    <button class="back-btn" onclick="closeMsg()">Eat Another? ✨</button>
+                    <button class="back-btn" onclick="closeMsg()">Try Another? ✨</button>
                 </div>
             </div>
         </div>
 
-        <p id="instruction" style="margin-top: 30px; font-size: 0.8rem; color: #aaa;">Tap to open the box</p>
+        <p id="instruction" style="margin-top: 35px; font-size: 0.8rem; color: #ff8fa3; font-weight: 600;">TAP TO OPEN THE BOX</p>
     </div>
 
     <script>
+        // 30 Unique Flirty/Romantic Messages
+        const messages = [
+            "Jia, you're the only 'sweet' I need in my life. ❤️",
+            "Warning: Megh is 100% addicted to you.",
+            "Are you made of chocolate? Because you're melt-in-my-mouth amazing.",
+            "I was going to give you a chocolate, but then I realized nothing is sweeter than your smile.",
+            "Can I be your permanent chocolate dealer? 😉",
+            "You + Me = The perfect blend of sweetness.",
+            "If being cute was a crime, Jia, you'd be in for life.",
+            "My favorite flavor? Your love.",
+            "One look at you and I forget about every chocolate in the world.",
+            "Jia, you're the 'marshmallow' to my hot chocolate.",
+            "I'm not a chocolate fan, but I'm definitely a 'Jia' fan. 😘",
+            "Can we just skip the chocolate and go straight to the cuddles?",
+            "Megh's heart: 99% Jia, 1% Chocolate.",
+            "Are you a dark chocolate? Because you're intense and I can't get enough.",
+            "You’re sweeter than any truffle I’ve ever tasted. ✨",
+            "I'd share my last chocolate with you. That's how much I love you!",
+            "If kisses were chocolates, I'd send you a factory. 💋",
+            "Jia, you make my life look like a box of premium chocolates.",
+            "Stop being so cute, it's getting hard to concentrate on anything else!",
+            "You’re the secret ingredient to Megh's happiness.",
+            "Life is like a box of chocolates, but I already found the best piece: You.",
+            "If you were a candy, you'd be a Fine-Apple. 🍍",
+            "I’m 'cocoa' for you, Jia! ❤️",
+            "Did it hurt when you fell from the vending machine? Because you’re a snack!",
+            "You’re the dip to my strawberry. 🍓",
+            "Forget the diet, you're the only treat I want tonight.",
+            "Jia, your smile is more intoxicating than dark rum chocolate.",
+            "My heart does a little 'mini-dance' every time you laugh.",
+            "You’re better than the golden ticket in a Wonka bar. 🎫",
+            "Let's be the kind of sweet that everyone is jealous of."
+        ];
+
+        let unusedMessages = [...messages];
+
         function openBox() {
             document.getElementById('lid').classList.add('lifted');
             document.getElementById('instruction').innerText = "Pick a treat, Jia!";
         }
 
-        function showMsg(text) {
-            document.getElementById('active-msg').innerText = text;
+        function popMessage() {
+            if (unusedMessages.length === 0) unusedMessages = [...messages];
+            
+            const randomIndex = Math.floor(Math.random() * unusedMessages.length);
+            const msg = unusedMessages.splice(randomIndex, 1)[0];
+            
+            document.getElementById('active-msg').innerText = msg;
             document.getElementById('msg-overlay').style.display = 'flex';
         }
 
         function closeMsg() {
             document.getElementById('msg-overlay').style.display = 'none';
         }
+
+        // Create background hearts
+        function createHearts() {
+            const container = document.getElementById('heart-spawn');
+            for(let i=0; i<15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.innerHTML = '🌸';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
     </script>
 </body>
 </html>
