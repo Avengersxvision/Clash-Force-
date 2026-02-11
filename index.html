@@ -4,365 +4,178 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hug Day | For Jia ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&family=Sacramento&display=swap" rel="stylesheet">
     <style>
         :root {
-            --winter-bg: #e0f7fa;
+            --sky: #a2d2ff;
             --snow: #ffffff;
-            --carrot: #ff9800;
-            --heart-red: #ff4d6d;
+            --wood: #5d4037;
+            --heart: #ff4d6d;
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; background-color: var(--winter-bg);
-            font-family: 'Quicksand', sans-serif;
-            touch-action: none;
+            overflow: hidden; font-family: 'Quicksand', sans-serif;
+            background: var(--sky); touch-action: none;
         }
 
-        .stage {
-            width: 100%; height: 100vh;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            position: relative; transition: background 1s;
-            background: linear-gradient(to bottom, #b3e5fc 0%, #e0f7fa 100%);
+        .winter-bg {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #a2d2ff 0%, #ffffff 100%);
+            z-index: 0;
         }
 
-        /* Falling Snowflakes */
-        .flake {
-            position: absolute; color: white; pointer-events: none;
-            z-index: 1; animation: fall linear infinite;
+        /* Snowman Body Parts */
+        .snowman {
+            position: absolute; bottom: 15%; width: 120px;
+            display: flex; flex-direction: column; align-items: center;
+            z-index: 5; cursor: grab; transition: transform 0.1s;
         }
 
-        @keyframes fall {
-            0% { transform: translateY(-10vh); }
-            100% { transform: translateY(110vh); }
+        #snowman-left { left: 5%; }
+        #snowman-right { right: 5%; }
+
+        .head { width: 60px; height: 60px; background: white; border-radius: 50%; position: relative; border-bottom: 2px solid #ddd; }
+        .body-mid { width: 90px; height: 80px; background: white; border-radius: 50%; margin-top: -10px; border-bottom: 2px solid #ddd; }
+        .body-base { width: 120px; height: 100px; background: white; border-radius: 50%; margin-top: -15px; }
+
+        .face { position: absolute; top: 20px; width: 100%; display: flex; justify-content: center; }
+        .eye { width: 6px; height: 6px; background: #333; border-radius: 50%; margin: 0 5px; }
+        .carrot { width: 15px; height: 6px; background: #ff9800; border-radius: 0 50% 50% 0; margin-top: 5px; }
+
+        /* Stick Hands */
+        .hand {
+            position: absolute; width: 100px; height: 8px;
+            background: var(--wood); top: 50%; z-index: 4;
+            border-radius: 5px; transition: width 0.1s;
         }
 
-        .header {
-            position: absolute; top: 8%; text-align: center;
-            z-index: 5; transition: opacity 0.5s;
-        }
-
-        h1 { font-family: 'Pacifico', cursive; color: #0277bd; margin: 0; text-shadow: 2px 2px 5px rgba(255,255,255,0.5); }
-        p { color: #546e7a; font-size: 0.9rem; font-weight: 600; }
-
-        /* The Snowmen Arms */
-        .snowman-arm {
-            position: absolute; width: 140px; height: 80px;
-            background: var(--snow); border-radius: 50px;
-            display: flex; align-items: center; z-index: 3;
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.1);
-            cursor: grab;
-        }
-
-        #arm-left { left: -20px; border-radius: 0 50px 50px 0; padding-left: 30px; }
-        #arm-right { right: -20px; border-radius: 50px 0 0 50px; justify-content: flex-end; padding-right: 30px; }
-
-        .eye { width: 8px; height: 8px; background: #333; border-radius: 50%; display: inline-block; margin: 0 3px; }
-        .nose { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 15px solid var(--carrot); display: inline-block; }
+        #hand-left { left: 80px; transform: rotate(-10deg); transform-origin: left; }
+        #hand-right { right: 80px; transform: rotate(10deg); transform-origin: right; }
 
         /* Center Heart */
         .center-heart {
-            font-size: 80px; position: absolute;
-            transition: all 0.5s; z-index: 2; opacity: 0.2; filter: grayscale(1);
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+            font-size: 100px; opacity: 0; transition: all 0.5s; z-index: 2;
         }
 
-        /* Hugging State */
-        .hugging-bg { background: radial-gradient(circle, #fff0f3 0%, #e0f7fa 100%); }
-        .pulse { animation: heartPulse 0.8s infinite alternate; opacity: 1 !important; filter: grayscale(0) !important; transform: scale(1.3); }
+        .hug-active .center-heart { opacity: 1; transform: translate(-50%, -50%) scale(1.2); animation: pulse 0.8s infinite alternate; }
 
-        #hug-message {
-            position: absolute; bottom: 15%; width: 85%;
-            text-align: center; font-weight: 600; color: #0277bd;
-            opacity: 0; transition: opacity 0.5s; font-size: 1.1rem;
-            line-height: 1.4; z-index: 10; background: rgba(255,255,255,0.5);
-            padding: 15px; border-radius: 20px; backdrop-filter: blur(5px);
+        @keyframes pulse { from { transform: translate(-50%, -50%) scale(1.2); } to { transform: translate(-50%, -50%) scale(1.5); } }
+
+        /* Message */
+        #msg-box {
+            position: absolute; bottom: 5%; width: 90%; left: 5%;
+            text-align: center; color: var(--wood); font-weight: 600;
+            background: rgba(255,255,255,0.8); padding: 15px;
+            border-radius: 20px; opacity: 0; transition: opacity 0.5s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); z-index: 10;
         }
 
-        @keyframes heartPulse { from { transform: scale(1.3); } to { transform: scale(1.6); } }
+        .show-msg { opacity: 1 !important; }
+
+        /* Snowflakes */
+        .snowflake { position: absolute; color: white; top: -20px; animation: fall linear infinite; z-index: 1; }
+        @keyframes fall { to { transform: translateY(110vh); } }
     </style>
 </head>
 <body>
 
-    <div class="stage" id="main-stage">
-        <div class="header" id="header">
-            <h1>Chilly Hug Day</h1>
-            <p>Slide the snowmen together to warm up Jia! ❄️</p>
+    <div class="winter-bg"></div>
+
+    <div class="center-heart" id="heart">❤️</div>
+
+    <div class="snowman" id="snowman-left">
+        <div class="head">
+            <div class="face"><div class="eye"></div><div class="eye"></div><div class="carrot"></div></div>
         </div>
-
-        <div class="center-heart" id="heart">❤️</div>
-
-        <div class="snowman-arm" id="arm-left">
-            <div class="eye"></div><div class="eye"></div>
-            <div class="nose"></div>
-        </div>
-
-        <div class="snowman-arm" id="arm-right">
-            <div class="nose" style="transform: rotate(180deg);"></div>
-            <div class="eye"></div><div class="eye"></div>
-        </div>
-
-        <div id="hug-message"></div>
+        <div class="body-mid"></div>
+        <div class="body-base"></div>
+        <div class="hand" id="hand-left"></div>
     </div>
 
-    <script>
-        const armLeft = document.getElementById('arm-left');
-        const armRight = document.getElementById('arm-right');
-        const heart = document.getElementById('heart');
-        const stage = document.getElementById('main-stage');
-        const msgBox = document.getElementById('hug-message');
-        const header = document.getElementById('header');
+    <div class="snowman" id="snowman-right">
+        <div class="head">
+            <div class="face"><div class="eye"></div><div class="eye"></div><div class="carrot" style="transform: scaleX(-1);"></div></div>
+        </div>
+        <div class="body-mid"></div>
+        <div class="body-base"></div>
+        <div class="hand" id="hand-right"></div>
+    </div>
 
-        const hugQuotes = [
-            "Even a snowman melts when Jia gives a hug! ❄️🔥",
-            "Megh’s hugs are warmer than a winter fireplace.",
-            "Sending you a 'frosty' hug that warms the heart. ❤️",
-            "Jia, you’re the only reason I’d ever want to melt.",
-            "Wrapped in Megh’s arms, winter feels like summer. 😘",
-            "A snuggly snowman hug just for my favorite person!",
-            "I'm 'snow' in love with your hugs, Jia!",
-            "Keep me close so I don't turn into a puddle! ❤️"
+    <div id="msg-box"></div>
+
+    <script>
+        const sLeft = document.getElementById('snowman-left');
+        const sRight = document.getElementById('snowman-right');
+        const hLeft = document.getElementById('hand-left');
+        const hRight = document.getElementById('hand-right');
+        const heart = document.getElementById('heart');
+        const msgBox = document.getElementById('msg-box');
+
+        const quotes = [
+            "Jia, your hugs melt even the coldest snowman! ❄️🔥",
+            "Megh + Jia = A warm hug in a cold world.",
+            "Wrapped in Megh's arms, winter feels like summer.",
+            "I'm 'snow' in love with your hugs, Jia! ❤️",
+            "Sending a chilly hug that warms your soul.",
+            "You’re perfectly hug-shaped. Don't ever let go! 😘"
         ];
 
         let isHugging = false;
 
-        function checkHug() {
-            const lRect = armLeft.getBoundingClientRect();
-            const rRect = armRight.getBoundingClientRect();
+        function checkConnection() {
+            const rectL = hLeft.getBoundingClientRect();
+            const rectR = hRight.getBoundingClientRect();
 
-            if (rRect.left - lRect.right < 15) {
-                if (!isHugging) startHugging();
+            if (rectR.left - rectL.right < 10) {
+                if (!isHugging) {
+                    isHugging = true;
+                    document.body.classList.add('hug-active');
+                    msgBox.innerText = quotes[Math.floor(Math.random() * quotes.length)];
+                    msgBox.classList.add('show-msg');
+                }
             } else {
-                if (isHugging) stopHugging();
+                isHugging = false;
+                document.body.classList.remove('hug-active');
+                msgBox.classList.remove('show-msg');
             }
         }
 
-        function startHugging() {
-            isHugging = true;
-            heart.classList.add('pulse');
-            stage.classList.add('hugging-bg');
-            msgBox.style.opacity = '1';
-            msgBox.innerText = hugQuotes[Math.floor(Math.random() * hugQuotes.length)];
-            if (window.navigator.vibrate) window.navigator.vibrate(40);
-        }
-
-        function stopHugging() {
-            isHugging = false;
-            heart.classList.remove('pulse');
-            stage.classList.remove('hugging-bg');
-            msgBox.style.opacity = '0';
-        }
-
-        // Touch & Mouse Drag Logic
-        function handleDrag(arm, isLeft, clientX) {
+        function handleDrag(snowman, isLeft, clientX) {
             let xPercent = (clientX / window.innerWidth) * 100;
-            if (isLeft && xPercent < 48) {
-                arm.style.left = (xPercent - 10) + "%";
-            } else if (!isLeft && (100 - xPercent) < 48) {
-                arm.style.right = (100 - xPercent - 10) + "%";
+            if (isLeft && xPercent < 45) {
+                snowman.style.left = (xPercent - 10) + "%";
+            } else if (!isLeft && (100 - xPercent) < 45) {
+                snowman.style.right = (100 - xPercent - 10) + "%";
             }
-            checkHug();
+            checkConnection();
         }
 
-        armLeft.addEventListener('touchmove', (e) => handleDrag(armLeft, true, e.touches[0].clientX));
-        armRight.addEventListener('touchmove', (e) => handleDrag(armRight, false, e.touches[0].clientX));
+        // Touch Events
+        sLeft.addEventListener('touchmove', (e) => handleDrag(sLeft, true, e.touches[0].clientX));
+        sRight.addEventListener('touchmove', (e) => handleDrag(sRight, false, e.touches[0].clientX));
 
-        // Desktop Mouse support
-        const moveHandler = (e) => {
+        // Mouse Events
+        const mouseHandler = (e) => {
             if (e.buttons !== 1) return;
-            if (e.target.id === 'arm-left') handleDrag(armLeft, true, e.clientX);
-            if (e.target.id === 'arm-right') handleDrag(armRight, false, e.clientX);
+            if (e.target.closest('#snowman-left')) handleDrag(sLeft, true, e.clientX);
+            if (e.target.closest('#snowman-right')) handleDrag(sRight, false, e.clientX);
         };
-        document.addEventListener('mousemove', moveHandler);
+        document.addEventListener('mousemove', mouseHandler);
 
-        // Snowflakes generator
-        function createSnow() {
-            for(let i=0; i<30; i++) {
-                let flake = document.createElement('div');
-                flake.className = 'flake';
-                flake.innerText = '❄';
-                flake.style.left = Math.random() * 100 + 'vw';
-                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                flake.style.opacity = Math.random();
-                flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-                document.body.appendChild(flake);
-            }
-        }
-        createSnow();
-    </script>
-</body>
-</html>
-            justify-content: center; align-items: center;
-            z-index: 10; position: relative;
-        }
-
-        .bento-wrapper {
-            position: relative; width: 320px; height: 320px;
-            cursor: pointer;
-        }
-
-        .lid {
-            position: absolute; width: 100%; height: 100%;
-            background: var(--box-outer); border-radius: 25px;
-            z-index: 10; display: flex; justify-content: center;
-            align-items: center; box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
-            transition: all 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            border: 6px solid #fff; box-sizing: border-box;
-        }
-
-        .lid-content { text-align: center; }
-        .lid-text { font-family: 'Sacramento', cursive; font-size: 2.8rem; color: #fff; margin: 0; }
-        .lid-sub { font-size: 0.8rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
-
-        .tray {
-            position: absolute; width: 100%; height: 100%;
-            background: #fff; border-radius: 25px;
-            display: grid; grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr; padding: 20px;
-            box-sizing: border-box; gap: 15px;
-            border: 4px solid var(--box-outer);
-        }
-
-        .compartment {
-            background: #fff5f7; border-radius: 15px;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 45px; transition: transform 0.2s;
-            border: 2px dashed #ffccd5;
-        }
-
-        #msg-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.98); border-radius: 25px;
-            z-index: 20; display: none; flex-direction: column;
-            justify-content: center; align-items: center;
-            text-align: center; padding: 25px; box-sizing: border-box;
-            animation: bounceIn 0.5s;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            70% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .msg-text { color: var(--choco); font-weight: 600; line-height: 1.5; font-size: 1.1rem; }
-        .back-btn { margin-top: 20px; padding: 10px 25px; background: var(--accent); color: white; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; }
-        .lifted { transform: translateY(-130%) rotate(10deg); opacity: 0; pointer-events: none; }
-    </style>
-</head>
-<body>
-
-    <audio id="bg-music" loop preload="auto">
-        <source src="https://www.dropbox.com/scl/fi/6w5ofha5iqmzgcbyoox8c/Kiss-Me-Cadbury-Dairy-Milk-Ad-Song-Lyrics-Vusicly.mp3?rlkey=nmtwnahuj5jk93isd5896ovqu&st=iunvl8q8&raw=1" type="audio/mpeg">
-    </audio>
-
-    <div class="container">
-        <div id="heart-spawn"></div>
-        <p style="color: var(--accent); letter-spacing: 3px; margin-bottom: 25px; font-weight: 600; font-size: 0.9rem;">SWEET SURPRISE FOR JIA</p>
-        
-        <div class="bento-wrapper">
-            <div class="lid" id="lid" onclick="openBox()">
-                <div class="lid-content">
-                    <p class="lid-text">Handcrafted</p>
-                    <p class="lid-sub">by Megh</p>
-                </div>
-            </div>
-
-            <div class="tray">
-                <div class="compartment" onclick="popMessage()">🍫</div>
-                <div class="compartment" onclick="popMessage()">🎀</div>
-                <div class="compartment" onclick="popMessage()">🍓</div>
-                <div class="compartment" onclick="popMessage()">💌</div>
-                
-                <div id="msg-overlay">
-                    <p class="msg-text" id="active-msg"></p>
-                    <button class="back-btn" onclick="closeMsg()">Eat Another? ✨</button>
-                </div>
-            </div>
-        </div>
-        <p id="instruction" style="margin-top: 35px; font-size: 0.8rem; color: #ff8fa3; font-weight: 600;">TAP TO OPEN THE BOX</p>
-    </div>
-
-    <script>
-        const messages = [
-            "Jia, you're the only 'sweet' I need in my life. ❤️",
-            "Warning: Megh is 100% addicted to you.",
-            "Are you made of chocolate? Because you're melt-in-my-mouth amazing.",
-            "I was going to give you a chocolate, but then I realized nothing is sweeter than your smile.",
-            "Can I be your permanent chocolate dealer? 😉",
-            "You + Me = The perfect blend of sweetness.",
-            "If being cute was a crime, Jia, you'd be in for life.",
-            "My favorite flavor? Your love.",
-            "One look at you and I forget about every chocolate in the world.",
-            "Jia, you're the 'marshmallow' to my hot chocolate.",
-            "I'm not a chocolate fan, but I'm definitely a 'Jia' fan. 😘",
-            "Can we just skip the chocolate and go straight to the cuddles?",
-            "Megh's heart: 99% Jia, 1% Chocolate.",
-            "Are you a dark chocolate? Because you're intense and I can't get enough.",
-            "You’re sweeter than any truffle I’ve ever tasted. ✨",
-            "I'd share my last chocolate with you. That's how much I love you!",
-            "If kisses were chocolates, I'd send you a factory. 💋",
-            "Jia, you make my life look like a box of premium chocolates.",
-            "Stop being so cute, it's getting hard to concentrate on anything else!",
-            "You’re the secret ingredient to Megh's happiness.",
-            "Life is like a box of chocolates, but I already found the best piece: You.",
-            "If you were a candy, you'd be a Fine-Apple. 🍍",
-            "I’m 'cocoa' for you, Jia! ❤️",
-            "Did it hurt when you fell from the vending machine? Because you’re a snack!",
-            "You’re the dip to my strawberry. 🍓",
-            "Forget the diet, you're the only treat I want tonight.",
-            "Jia, your smile is more intoxicating than dark rum chocolate.",
-            "My heart does a little 'mini-dance' every time you laugh.",
-            "You’re better than the golden ticket in a Wonka bar. 🎫",
-            "Let's be the kind of sweet that everyone is jealous of."
-        ];
-
-        let unusedMessages = [...messages];
-        const music = document.getElementById('bg-music');
-        let musicStarted = false;
-
-        function playMusic() {
-            if (!musicStarted) {
-                music.play().then(() => {
-                    musicStarted = true;
-                }).catch(err => {
-                    console.log("Audio waiting for more interaction...");
-                });
-            }
-        }
-
-        function openBox() {
-            document.getElementById('lid').classList.add('lifted');
-            document.getElementById('instruction').innerText = "Pick a treat, Jia!";
-            playMusic();
-        }
-
-        function popMessage() {
-            playMusic(); 
-            if (unusedMessages.length === 0) unusedMessages = [...messages];
-            const randomIndex = Math.floor(Math.random() * unusedMessages.length);
-            const msg = unusedMessages.splice(randomIndex, 1)[0];
-            document.getElementById('active-msg').innerText = msg;
-            document.getElementById('msg-overlay').style.display = 'flex';
-        }
-
-        function closeMsg() {
-            document.getElementById('msg-overlay').style.display = 'none';
-        }
-
-        function createHearts() {
-            const container = document.getElementById('heart-spawn');
-            for(let i=0; i<15; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart-bg';
-                heart.innerHTML = '🌸';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDelay = Math.random() * 5 + 's';
-                container.appendChild(heart);
-            }
-        }
-        createHearts();
+        // Snowflakes
+        setInterval(() => {
+            const f = document.createElement('div');
+            f.className = 'snowflake';
+            f.innerHTML = '❄';
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.fontSize = Math.random() * 20 + 10 + 'px';
+            f.style.animationDuration = Math.random() * 3 + 2 + 's';
+            f.style.opacity = Math.random();
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 5000);
+        }, 300);
     </script>
 </body>
 </html>
