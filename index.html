@@ -9,9 +9,8 @@
         :root {
             --sky: #d0eefb;
             --snow-white: #ffffff;
-            --snow-shadow: #d1e5f0;
+            --snow-shadow: #e3f2fd;
             --carrot: #ff9800;
-            --wood: #5d4037;
             --heart: #ff4d6d;
         }
 
@@ -27,52 +26,53 @@
             z-index: 0;
         }
 
-        /* The Snowman - Improved Proportions & Shading */
+        /* Snowman Styling */
         .snowman {
             position: absolute; bottom: 15%; width: 140px;
             display: flex; flex-direction: column; align-items: center;
-            z-index: 5; cursor: grab; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+            z-index: 5; cursor: grab; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.08));
         }
 
         #snowman-left { left: 5%; }
         #snowman-right { right: 5%; }
 
         .snowball {
-            background: radial-gradient(circle at 30% 30%, var(--snow-white), var(--snow-shadow));
+            background: radial-gradient(circle at 35% 35%, var(--snow-white), var(--snow-shadow));
             border-radius: 50%;
             position: relative;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.05);
         }
 
-        .head { width: 65px; height: 65px; z-index: 3; }
-        .body-mid { width: 95px; height: 85px; margin-top: -15px; z-index: 2; }
-        .body-base { width: 130px; height: 110px; margin-top: -20px; z-index: 1; }
+        .head { width: 60px; height: 60px; z-index: 3; }
+        .body-mid { width: 90px; height: 80px; margin-top: -12px; z-index: 2; }
+        .body-base { width: 125px; height: 105px; margin-top: -18px; z-index: 1; }
 
         /* Face details */
-        .face { position: absolute; top: 22px; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .eye { width: 7px; height: 7px; background: #222; border-radius: 50%; margin: 0 6px; }
+        .face { position: absolute; top: 20px; width: 100%; display: flex; justify-content: center; align-items: center; }
+        .eye { width: 6px; height: 6px; background: #333; border-radius: 50%; margin: 0 5px; }
         .nose { 
             width: 0; height: 0; 
             border-top: 4px solid transparent; 
             border-bottom: 4px solid transparent; 
-            border-left: 18px solid var(--carrot);
-            border-radius: 2px;
+            border-left: 15px solid var(--carrot);
         }
 
-        /* Stick Hands - Branch Style */
-        .stick-hand {
-            position: absolute; width: 110px; height: 6px;
-            background: var(--wood); top: 40px; z-index: 4;
-            border-radius: 10px;
+        /* NEW SNOW HANDS */
+        .snow-hand {
+            position: absolute; width: 60px; height: 40px;
+            background: radial-gradient(circle at center, var(--snow-white), var(--snow-shadow));
+            top: 20px; z-index: 4; border-radius: 20px;
+            box-shadow: 2px 5px 10px rgba(0,0,0,0.05);
         }
 
         #hand-left { 
-            left: 70px; transform: rotate(-15deg); transform-origin: left center;
+            left: 65px; transform: rotate(-10deg); 
         }
         #hand-right { 
-            right: 70px; transform: rotate(15deg); transform-origin: right center;
+            right: 65px; transform: rotate(10deg); 
         }
 
-        /* Center Heart Pulse */
+        /* Center Heart */
         .heart-container {
             position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
             z-index: 2; pointer-events: none;
@@ -80,22 +80,25 @@
 
         #heart-emoji {
             font-size: 100px; opacity: 0; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: grayscale(1);
         }
 
         .hug-active #heart-emoji {
             opacity: 1; transform: scale(1.3);
+            filter: grayscale(0);
             animation: pulse 0.8s infinite alternate;
         }
 
         @keyframes pulse { 
-            from { transform: scale(1.2); filter: drop-shadow(0 0 10px var(--heart)); } 
-            to { transform: scale(1.5); filter: drop-shadow(0 0 30px var(--heart)); } 
+            from { transform: scale(1.2); } 
+            to { transform: scale(1.5); } 
         }
 
-        /* Message Styling */
+        /* Message Card */
         #msg-card {
             position: absolute; bottom: 5%; width: 85%; left: 7.5%;
-            background: white; padding: 15px; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            padding: 15px; border-radius: 20px;
             text-align: center; color: #2c3e50; font-weight: 600;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             opacity: 0; transform: translateY(20px);
@@ -104,7 +107,6 @@
 
         .show-msg { opacity: 1 !important; transform: translateY(0) !important; }
 
-        /* Snowflake animation */
         .snowflake { position: absolute; color: white; top: -20px; pointer-events: none; animation: fall linear infinite; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
@@ -120,27 +122,25 @@
     <div class="snowman" id="snowman-left">
         <div class="snowball head">
             <div class="face">
-                <div class="eye"></div>
-                <div class="nose"></div>
-                <div class="eye"></div>
+                <div class="eye"></div><div class="nose"></div><div class="eye"></div>
             </div>
         </div>
-        <div class="snowball body-mid"></div>
+        <div class="snowball body-mid">
+             <div class="snow-hand" id="hand-left"></div>
+        </div>
         <div class="snowball body-base"></div>
-        <div class="stick-hand" id="hand-left"></div>
     </div>
 
     <div class="snowman" id="snowman-right">
         <div class="snowball head">
             <div class="face">
-                <div class="eye"></div>
-                <div class="nose" style="transform: rotate(180deg);"></div>
-                <div class="eye"></div>
+                <div class="eye"></div><div class="nose" style="transform: rotate(180deg);"></div><div class="eye"></div>
             </div>
         </div>
-        <div class="snowball body-mid"></div>
+        <div class="snowball body-mid">
+             <div class="snow-hand" id="hand-right"></div>
+        </div>
         <div class="snowball body-base"></div>
-        <div class="stick-hand" id="hand-right"></div>
     </div>
 
     <div id="msg-card"></div>
@@ -154,11 +154,11 @@
 
         const quotes = [
             "Jia, your hugs are the only thing that can melt Megh's heart! ❄️❤️",
-            "Warning: This hug might result in extreme happiness.",
-            "Winter is cold, but Megh's arms are warm just for you.",
+            "This snowy hug is warmer than any blanket.",
+            "Wrapped in Megh's arms, winter feels like paradise.",
             "I'm 'snow' lucky to have your hugs, Jia!",
-            "Even a frozen snowman feels warm when you're around.",
-            "Let's stay in this hug until winter ends? 😘"
+            "One hug from you is worth a thousand winters.",
+            "Jia, let's melt into this hug together! 😘"
         ];
 
         let isHugging = false;
@@ -167,14 +167,13 @@
             const rectL = hLeft.getBoundingClientRect();
             const rectR = hRight.getBoundingClientRect();
 
-            // Detect collision between the "stick hands"
-            if (rectR.left - rectL.right < 5) {
+            // Detect when the fluffy snow-hands touch
+            if (rectR.left - rectL.right < 0) {
                 if (!isHugging) {
                     isHugging = true;
                     document.body.classList.add('hug-active');
                     msgCard.innerText = quotes[Math.floor(Math.random() * quotes.length)];
                     msgCard.classList.add('show-msg');
-                    if(navigator.vibrate) navigator.vibrate(50);
                 }
             } else {
                 isHugging = false;
@@ -185,8 +184,6 @@
 
         function moveSnowman(snowman, isLeft, clientX) {
             let xPercent = (clientX / window.innerWidth) * 100;
-            
-            // Limit movement so they don't go off screen or past the center
             if (isLeft) {
                 if (xPercent < 48) snowman.style.left = (xPercent - 10) + "%";
             } else {
@@ -196,14 +193,12 @@
             checkHug();
         }
 
-        // Mouse Drag
         document.addEventListener('mousemove', (e) => {
             if (e.buttons !== 1) return;
             if (e.target.closest('#snowman-left')) moveSnowman(sLeft, true, e.clientX);
             if (e.target.closest('#snowman-right')) moveSnowman(sRight, false, e.clientX);
         });
 
-        // Touch Drag
         const touchMove = (e, isLeft) => {
             e.preventDefault();
             moveSnowman(isLeft ? sLeft : sRight, isLeft, e.touches[0].clientX);
@@ -212,7 +207,6 @@
         sLeft.addEventListener('touchmove', (e) => touchMove(e, true));
         sRight.addEventListener('touchmove', (e) => touchMove(e, false));
 
-        // Background Snow Effect
         function createSnowflake() {
             const f = document.createElement('div');
             f.className = 'snowflake';
@@ -220,11 +214,12 @@
             f.style.left = Math.random() * 100 + 'vw';
             f.style.fontSize = Math.random() * 15 + 10 + 'px';
             f.style.animationDuration = Math.random() * 3 + 2 + 's';
-            f.style.opacity = Math.random() * 0.7 + 0.3;
+            f.style.opacity = Math.random();
             document.body.appendChild(f);
             setTimeout(() => f.remove(), 5000);
         }
         setInterval(createSnowflake, 300);
     </script>
 </body>
-</html>
+            </html>
+            
