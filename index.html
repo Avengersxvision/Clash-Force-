@@ -3,37 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For My Jia ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;600&family=Sacramento&display=swap" rel="stylesheet">
+    <title>Hug Day | For Jia ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #fff0f3;
-            --box-outer: #ffb3c1;
-            --choco: #4e342e;
-            --accent: #ff4d6d;
+            --winter-bg: #e0f7fa;
+            --snow: #ffffff;
+            --carrot: #ff9800;
+            --heart-red: #ff4d6d;
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; background-color: var(--bg);
+            overflow: hidden; background-color: var(--winter-bg);
             font-family: 'Quicksand', sans-serif;
+            touch-action: none;
         }
 
-        /* Floating Hearts Background */
-        .heart-bg {
-            position: absolute; color: var(--accent); opacity: 0.2;
-            font-size: 20px; animation: floatUp 6s infinite linear;
-            z-index: 0; pointer-events: none;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-10vh) rotate(360deg); }
-        }
-
-        .container {
+        .stage {
             width: 100%; height: 100vh;
             display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: relative; transition: background 1s;
+            background: linear-gradient(to bottom, #b3e5fc 0%, #e0f7fa 100%);
+        }
+
+        /* Falling Snowflakes */
+        .flake {
+            position: absolute; color: white; pointer-events: none;
+            z-index: 1; animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh); }
+            100% { transform: translateY(110vh); }
+        }
+
+        .header {
+            position: absolute; top: 8%; text-align: center;
+            z-index: 5; transition: opacity 0.5s;
+        }
+
+        h1 { font-family: 'Pacifico', cursive; color: #0277bd; margin: 0; text-shadow: 2px 2px 5px rgba(255,255,255,0.5); }
+        p { color: #546e7a; font-size: 0.9rem; font-weight: 600; }
+
+        /* The Snowmen Arms */
+        .snowman-arm {
+            position: absolute; width: 140px; height: 80px;
+            background: var(--snow); border-radius: 50px;
+            display: flex; align-items: center; z-index: 3;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.1);
+            cursor: grab;
+        }
+
+        #arm-left { left: -20px; border-radius: 0 50px 50px 0; padding-left: 30px; }
+        #arm-right { right: -20px; border-radius: 50px 0 0 50px; justify-content: flex-end; padding-right: 30px; }
+
+        .eye { width: 8px; height: 8px; background: #333; border-radius: 50%; display: inline-block; margin: 0 3px; }
+        .nose { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 15px solid var(--carrot); display: inline-block; }
+
+        /* Center Heart */
+        .center-heart {
+            font-size: 80px; position: absolute;
+            transition: all 0.5s; z-index: 2; opacity: 0.2; filter: grayscale(1);
+        }
+
+        /* Hugging State */
+        .hugging-bg { background: radial-gradient(circle, #fff0f3 0%, #e0f7fa 100%); }
+        .pulse { animation: heartPulse 0.8s infinite alternate; opacity: 1 !important; filter: grayscale(0) !important; transform: scale(1.3); }
+
+        #hug-message {
+            position: absolute; bottom: 15%; width: 85%;
+            text-align: center; font-weight: 600; color: #0277bd;
+            opacity: 0; transition: opacity 0.5s; font-size: 1.1rem;
+            line-height: 1.4; z-index: 10; background: rgba(255,255,255,0.5);
+            padding: 15px; border-radius: 20px; backdrop-filter: blur(5px);
+        }
+
+        @keyframes heartPulse { from { transform: scale(1.3); } to { transform: scale(1.6); } }
+    </style>
+</head>
+<body>
+
+    <div class="stage" id="main-stage">
+        <div class="header" id="header">
+            <h1>Chilly Hug Day</h1>
+            <p>Slide the snowmen together to warm up Jia! ❄️</p>
+        </div>
+
+        <div class="center-heart" id="heart">❤️</div>
+
+        <div class="snowman-arm" id="arm-left">
+            <div class="eye"></div><div class="eye"></div>
+            <div class="nose"></div>
+        </div>
+
+        <div class="snowman-arm" id="arm-right">
+            <div class="nose" style="transform: rotate(180deg);"></div>
+            <div class="eye"></div><div class="eye"></div>
+        </div>
+
+        <div id="hug-message"></div>
+    </div>
+
+    <script>
+        const armLeft = document.getElementById('arm-left');
+        const armRight = document.getElementById('arm-right');
+        const heart = document.getElementById('heart');
+        const stage = document.getElementById('main-stage');
+        const msgBox = document.getElementById('hug-message');
+        const header = document.getElementById('header');
+
+        const hugQuotes = [
+            "Even a snowman melts when Jia gives a hug! ❄️🔥",
+            "Megh’s hugs are warmer than a winter fireplace.",
+            "Sending you a 'frosty' hug that warms the heart. ❤️",
+            "Jia, you’re the only reason I’d ever want to melt.",
+            "Wrapped in Megh’s arms, winter feels like summer. 😘",
+            "A snuggly snowman hug just for my favorite person!",
+            "I'm 'snow' in love with your hugs, Jia!",
+            "Keep me close so I don't turn into a puddle! ❤️"
+        ];
+
+        let isHugging = false;
+
+        function checkHug() {
+            const lRect = armLeft.getBoundingClientRect();
+            const rRect = armRight.getBoundingClientRect();
+
+            if (rRect.left - lRect.right < 15) {
+                if (!isHugging) startHugging();
+            } else {
+                if (isHugging) stopHugging();
+            }
+        }
+
+        function startHugging() {
+            isHugging = true;
+            heart.classList.add('pulse');
+            stage.classList.add('hugging-bg');
+            msgBox.style.opacity = '1';
+            msgBox.innerText = hugQuotes[Math.floor(Math.random() * hugQuotes.length)];
+            if (window.navigator.vibrate) window.navigator.vibrate(40);
+        }
+
+        function stopHugging() {
+            isHugging = false;
+            heart.classList.remove('pulse');
+            stage.classList.remove('hugging-bg');
+            msgBox.style.opacity = '0';
+        }
+
+        // Touch & Mouse Drag Logic
+        function handleDrag(arm, isLeft, clientX) {
+            let xPercent = (clientX / window.innerWidth) * 100;
+            if (isLeft && xPercent < 48) {
+                arm.style.left = (xPercent - 10) + "%";
+            } else if (!isLeft && (100 - xPercent) < 48) {
+                arm.style.right = (100 - xPercent - 10) + "%";
+            }
+            checkHug();
+        }
+
+        armLeft.addEventListener('touchmove', (e) => handleDrag(armLeft, true, e.touches[0].clientX));
+        armRight.addEventListener('touchmove', (e) => handleDrag(armRight, false, e.touches[0].clientX));
+
+        // Desktop Mouse support
+        const moveHandler = (e) => {
+            if (e.buttons !== 1) return;
+            if (e.target.id === 'arm-left') handleDrag(armLeft, true, e.clientX);
+            if (e.target.id === 'arm-right') handleDrag(armRight, false, e.clientX);
+        };
+        document.addEventListener('mousemove', moveHandler);
+
+        // Snowflakes generator
+        function createSnow() {
+            for(let i=0; i<30; i++) {
+                let flake = document.createElement('div');
+                flake.className = 'flake';
+                flake.innerText = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                flake.style.opacity = Math.random();
+                flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                document.body.appendChild(flake);
+            }
+        }
+        createSnow();
+    </script>
+</body>
+</html>
             justify-content: center; align-items: center;
             z-index: 10; position: relative;
         }
