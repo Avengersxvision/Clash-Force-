@@ -3,184 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Megh's Station | For Jia ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <title>Hug Day | Megh & Jia ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --radio-body: #ffb3c1;
-            --dial-bg: #4e342e;
-            --glow: #ff4d6d;
+            --megh-color: #a2d2ff;
+            --jia-color: #ffafcc;
+            --merge-color: #cdb4db;
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; background-color: #ffe5ec;
-            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; font-family: 'Montserrat', sans-serif;
+            touch-action: none; background: #fff;
         }
+
+        /* Split Background */
+        .bg-layer {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; transition: background 1.5s ease;
+            z-index: 0;
+        }
+
+        #left-bg { width: 50%; background: var(--megh-color); }
+        #right-bg { width: 50%; background: var(--jia-color); }
 
         .container {
-            width: 100%; height: 100vh;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            background: radial-gradient(circle, #ffccd5 0%, #ffe5ec 100%);
+            position: relative; width: 100%; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10;
         }
 
-        /* The Radio Body */
-        .radio {
-            width: 320px; height: 420px;
-            background: var(--radio-body);
-            border-radius: 40px;
-            border: 8px solid #fff;
-            box-shadow: 0 20px 50px rgba(255, 77, 109, 0.3);
-            display: flex; flex-direction: column;
-            align-items: center; padding: 20px;
-            position: relative;
+        /* The Orbs */
+        .orb {
+            position: absolute; width: 80px; height: 80px;
+            border-radius: 50%; background: white;
+            box-shadow: 0 0 30px rgba(255,255,255,0.8);
+            cursor: grab; display: flex; align-items: center;
+            justify-content: center; font-size: 0.7rem; font-weight: 600;
+            color: #555; transition: transform 0.2s;
         }
 
-        /* Digital Display */
-        .display-screen {
-            width: 90%; height: 80px;
-            background: #222; border-radius: 10px;
-            margin-top: 20px; border: 4px solid #555;
-            position: relative; overflow: hidden;
-            display: flex; align-items: center;
+        #orb-megh { left: 15%; }
+        #orb-jia { right: 15%; }
+
+        /* The Resulting Heart */
+        #final-heart {
+            font-size: 120px; position: absolute;
+            opacity: 0; transform: scale(0.5);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; z-index: 20;
         }
 
-        .ticker-text {
-            position: absolute; white-space: nowrap;
-            color: #00ff00; font-family: 'Share+Tech+Mono', monospace;
-            font-size: 1.2rem; text-shadow: 0 0 10px #00ff00;
-            animation: ticker 10s linear infinite;
-            opacity: 0.1; /* Static look until tuned */
+        /* Polaroid Message */
+        .polaroid {
+            position: absolute; bottom: -300px; width: 250px;
+            background: white; padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: rotate(-3deg); transition: all 1s ease;
+            z-index: 30; text-align: center;
         }
 
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
+        .polaroid img { width: 100%; height: 200px; background: #eee; object-fit: cover; margin-bottom: 15px; }
+        .polaroid p { font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: #333; margin: 0; }
 
-        /* Tuning Dial */
-        .dial-area {
-            margin-top: 50px; position: relative;
-            width: 180px; height: 180px;
-            background: var(--dial-bg); border-radius: 50%;
-            border: 10px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
+        /* Animation States */
+        .merged #left-bg, .merged #right-bg { background: var(--merge-color) !important; width: 100%; }
+        .merged #final-heart { opacity: 1; transform: scale(1.2); animation: pulse 1s infinite alternate; }
+        .merged .polaroid { bottom: 10%; transform: rotate(2deg); }
+        .merged .orb { opacity: 0; transform: scale(0); }
 
-        .knob {
-            position: absolute; width: 100%; height: 100%;
-            background: repeating-conic-gradient(from 0deg, #5d4037 0deg 10deg, #4e342e 10deg 20deg);
-            border-radius: 50%; transition: transform 0.1s;
-            display: flex; justify-content: center;
-        }
+        @keyframes pulse { from { transform: scale(1.2); } to { transform: scale(1.4); } }
 
-        .knob-marker {
-            width: 6px; height: 30px; background: var(--glow);
-            border-radius: 10px; margin-top: 10px;
-        }
-
-        .status-light {
-            width: 15px; height: 15px; border-radius: 50%;
-            background: #550000; margin-top: 30px;
-            transition: background 0.3s;
-        }
-
-        /* Tuned State */
-        .tuned .ticker-text { opacity: 1; animation-duration: 6s; color: var(--glow); text-shadow: 0 0 10px var(--glow); }
-        .tuned .status-light { background: #ff0000; box-shadow: 0 0 15px #ff0000; }
-        .tuned .display-screen { border-color: var(--glow); }
-
-        .instruction {
-            margin-top: 30px; font-size: 0.8rem; color: #ff8fa3;
-            text-transform: uppercase; letter-spacing: 2px;
+        .hint {
+            position: absolute; top: 15%; width: 100%; text-align: center;
+            color: white; letter-spacing: 3px; font-weight: 300; font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="radio" id="radio-unit">
-            <div class="display-screen">
-                <div class="ticker-text" id="ticker">TUNING... FIND THE LOVE FREQUENCY... 14.3 FM...</div>
-            </div>
+    <div class="bg-layer" id="bg-full">
+        <div id="left-bg"></div>
+        <div id="right-bg"></div>
+    </div>
 
-            <div class="status-light" id="light"></div>
+    <div class="hint" id="hint">BRING THE SOULS TOGETHER</div>
 
-            <div class="dial-area">
-                <div class="knob" id="knob">
-                    <div class="knob-marker"></div>
-                </div>
-            </div>
-            
-            <p class="instruction" id="hint">Rotate the dial to find Megh</p>
+    <div class="container" id="stage">
+        <div class="orb" id="orb-megh">MEGH</div>
+        <div class="orb" id="orb-jia">JIA</div>
+        
+        <div id="final-heart">💖</div>
+
+        <div class="polaroid" id="photo-msg">
+            <div style="width:100%; height:180px; background: #ffe5ec; display:flex; align-items:center; justify-content:center; font-size:40px;">🫂</div>
+            <p>Happy Hug Day, Jia!<br>My favorite place is inside your hug.</p>
         </div>
     </div>
 
-    <audio id="bg-music" loop>
-        <source src="https://www.dropbox.com/scl/fi/6w5ofha5iqmzgcbyoox8c/Kiss-Me-Cadbury-Dairy-Milk-Ad-Song-Lyrics-Vusicly.mp3?rlkey=nmtwnahuj5jk93isd5896ovqu&st=iunvl8q8&raw=1" type="audio/mpeg">
-    </audio>
-
     <script>
-        const knob = document.getElementById('knob');
-        const radio = document.getElementById('radio-unit');
-        const ticker = document.getElementById('ticker');
-        const music = document.getElementById('bg-music');
-        let currentRotation = 0;
-        let isTuned = false;
+        const megh = document.getElementById('orb-megh');
+        const jia = document.getElementById('orb-jia');
+        const stage = document.getElementById('stage');
+        const hint = document.getElementById('hint');
 
-        // The "Love Frequency" is around 180 degrees
-        const targetRotation = 180; 
-        const tolerance = 20;
+        function checkMerge() {
+            const r1 = megh.getBoundingClientRect();
+            const r2 = jia.getBoundingClientRect();
 
-        function handleRotate(e) {
-            const rect = knob.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+            // Check if center points are close
+            const distance = Math.abs(r1.right - r2.left);
             
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-            const deltaX = clientX - centerX;
-            const deltaY = clientY - centerY;
-            
-            let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-            angle = (angle + 360) % 360;
-            
-            knob.style.transform = `rotate(${angle}deg)`;
-
-            // Check if tuned
-            if (Math.abs(angle - targetRotation) < tolerance) {
-                if (!isTuned) {
-                    isTuned = true;
-                    radio.classList.add('tuned');
-                    ticker.innerText = "❤️ JIA, YOU ARE TUNED INTO MEGH'S HEART FM... HAPPY VALENTINE'S DAY! ❤️";
-                    music.volume = 1.0;
-                    music.play();
-                }
-            } else {
-                isTuned = false;
-                radio.classList.remove('tuned');
-                ticker.innerText = "STATIC... SEARCHING... 88.5... 102.1... STATIC...";
-                music.volume = 0.2; // Keep it low like static
+            if (distance < 10) {
+                stage.classList.add('merged');
+                hint.style.opacity = '0';
             }
         }
 
-        knob.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            handleRotate(e);
+        function moveOrb(el, isLeft, clientX) {
+            if (stage.classList.contains('merged')) return;
+            
+            let xPercent = (clientX / window.innerWidth) * 100;
+            
+            if (isLeft) {
+                if (xPercent < 50) el.style.left = (xPercent - 5) + "%";
+            } else {
+                let rightPercent = 100 - xPercent;
+                if (rightPercent < 50) el.style.right = (rightPercent - 5) + "%";
+            }
+            checkMerge();
+        }
+
+        // Mouse Drag
+        document.addEventListener('mousemove', (e) => {
+            if (e.buttons !== 1) return;
+            if (e.target.id === 'orb-megh') moveOrb(megh, true, e.clientX);
+            if (e.target.id === 'orb-jia') moveOrb(jia, false, e.clientX);
         });
 
-        knob.addEventListener('mousemove', (e) => {
-            if (e.buttons === 1) handleRotate(e);
-        });
+        // Touch Drag
+        megh.addEventListener('touchmove', (e) => { e.preventDefault(); moveOrb(megh, true, e.touches[0].clientX); });
+        jia.addEventListener('touchmove', (e) => { e.preventDefault(); moveOrb(jia, false, e.touches[0].clientX); });
 
-        // Initialize music but muted
-        document.body.addEventListener('click', () => {
-             if(music.paused) {
-                 music.play();
-                 music.volume = 0;
-             }
-        }, {once: true});
     </script>
 </body>
 </html>
