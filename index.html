@@ -3,148 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hug Day | Megh & Jia ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <title>Hug Day | For Jia ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;600&family=Sacramento&display=swap" rel="stylesheet">
     <style>
         :root {
-            --megh-color: #a2d2ff;
-            --jia-color: #ffafcc;
-            --merge-color: #cdb4db;
+            --bg-cold: #1a1a2e;
+            --bg-warm: #ff4d6d;
+            --glow: #ffb3c1;
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; font-family: 'Montserrat', sans-serif;
-            touch-action: none; background: #fff;
-        }
-
-        /* Split Background */
-        .bg-layer {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; transition: background 1.5s ease;
-            z-index: 0;
-        }
-
-        #left-bg { width: 50%; background: var(--megh-color); }
-        #right-bg { width: 50%; background: var(--jia-color); }
-
-        .container {
-            position: relative; width: 100%; height: 100vh;
+            overflow: hidden; font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-cold); transition: background 2s ease;
             display: flex; justify-content: center; align-items: center;
+            touch-action: none;
+        }
+
+        /* The Core Heart */
+        #hold-zone {
+            position: relative; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             z-index: 10;
         }
 
-        /* The Orbs */
-        .orb {
-            position: absolute; width: 80px; height: 80px;
-            border-radius: 50%; background: white;
-            box-shadow: 0 0 30px rgba(255,255,255,0.8);
-            cursor: grab; display: flex; align-items: center;
-            justify-content: center; font-size: 0.7rem; font-weight: 600;
-            color: #555; transition: transform 0.2s;
+        #main-heart {
+            font-size: 50px; transition: all 0.1s linear;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            user-select: none; pointer-events: none;
         }
 
-        #orb-megh { left: 15%; }
-        #orb-jia { right: 15%; }
-
-        /* The Resulting Heart */
-        #final-heart {
-            font-size: 120px; position: absolute;
-            opacity: 0; transform: scale(0.5);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; z-index: 20;
+        .instruction {
+            position: absolute; bottom: 15%; color: white;
+            text-transform: uppercase; letter-spacing: 3px;
+            font-size: 0.7rem; opacity: 0.6; transition: opacity 0.5s;
         }
 
-        /* Polaroid Message */
-        .polaroid {
-            position: absolute; bottom: -300px; width: 250px;
-            background: white; padding: 15px 15px 40px 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transform: rotate(-3deg); transition: all 1s ease;
-            z-index: 30; text-align: center;
+        /* Progress Ring */
+        #ring {
+            position: absolute; width: 150px; height: 150px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%; pointer-events: none;
         }
 
-        .polaroid img { width: 100%; height: 200px; background: #eee; object-fit: cover; margin-bottom: 15px; }
-        .polaroid p { font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: #333; margin: 0; }
-
-        /* Animation States */
-        .merged #left-bg, .merged #right-bg { background: var(--merge-color) !important; width: 100%; }
-        .merged #final-heart { opacity: 1; transform: scale(1.2); animation: pulse 1s infinite alternate; }
-        .merged .polaroid { bottom: 10%; transform: rotate(2deg); }
-        .merged .orb { opacity: 0; transform: scale(0); }
-
-        @keyframes pulse { from { transform: scale(1.2); } to { transform: scale(1.4); } }
-
-        .hint {
-            position: absolute; top: 15%; width: 100%; text-align: center;
-            color: white; letter-spacing: 3px; font-weight: 300; font-size: 0.8rem;
+        #progress {
+            position: absolute; width: 150px; height: 150px;
+            border: 4px solid var(--glow); border-radius: 50%;
+            border-top-color: transparent; border-left-color: transparent;
+            transform: rotate(0deg); opacity: 0; transition: opacity 0.3s;
         }
+
+        /* Particles */
+        .particle {
+            position: absolute; background: white; border-radius: 50%;
+            pointer-events: none; opacity: 0;
+        }
+
+        /* Final Card */
+        #card {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8);
+            width: 80%; max-width: 320px; background: white;
+            padding: 40px 20px; border-radius: 30px; text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none; z-index: 100;
+        }
+
+        h2 { font-family: 'Sacramento', cursive; font-size: 2.5rem; color: var(--bg-warm); margin-bottom: 10px; }
+        p { color: #555; line-height: 1.6; font-weight: 500; }
+
     </style>
 </head>
 <body>
 
-    <div class="bg-layer" id="bg-full">
-        <div id="left-bg"></div>
-        <div id="right-bg"></div>
+    <div id="hold-zone">
+        <div id="ring"></div>
+        <div id="progress"></div>
+        <div id="main-heart">🤍</div>
+        <p class="instruction" id="hint">Hold to give Jia a hug</p>
     </div>
 
-    <div class="hint" id="hint">BRING THE SOULS TOGETHER</div>
-
-    <div class="container" id="stage">
-        <div class="orb" id="orb-megh">MEGH</div>
-        <div class="orb" id="orb-jia">JIA</div>
-        
-        <div id="final-heart">💖</div>
-
-        <div class="polaroid" id="photo-msg">
-            <div style="width:100%; height:180px; background: #ffe5ec; display:flex; align-items:center; justify-content:center; font-size:40px;">🫂</div>
-            <p>Happy Hug Day, Jia!<br>My favorite place is inside your hug.</p>
-        </div>
+    <div id="card">
+        <h2>Warmest Hug!</h2>
+        <p>A hug is Megh's way of saying "I'm so lucky to have you." <br><br> Happy Hug Day, Jia!</p>
+        <button onclick="location.reload()" style="margin-top: 20px; border: none; background: #eee; padding: 10px 20px; border-radius: 20px;">Hug Again?</button>
     </div>
 
     <script>
-        const megh = document.getElementById('orb-megh');
-        const jia = document.getElementById('orb-jia');
-        const stage = document.getElementById('stage');
+        const zone = document.getElementById('hold-zone');
+        const heart = document.getElementById('main-heart');
+        const progress = document.getElementById('progress');
         const hint = document.getElementById('hint');
+        const card = document.getElementById('card');
+        
+        let timer;
+        let growth = 50;
+        let isHolding = false;
+        let charge = 0;
 
-        function checkMerge() {
-            const r1 = megh.getBoundingClientRect();
-            const r2 = jia.getBoundingClientRect();
-
-            // Check if center points are close
-            const distance = Math.abs(r1.right - r2.left);
+        function startHug(e) {
+            isHolding = true;
+            hint.style.opacity = '0';
+            progress.style.opacity = '1';
+            heart.innerHTML = '❤️';
             
-            if (distance < 10) {
-                stage.classList.add('merged');
-                hint.style.opacity = '0';
+            timer = setInterval(() => {
+                if(charge < 100) {
+                    charge += 1;
+                    growth += 1.5;
+                    heart.style.fontSize = growth + 'px';
+                    progress.style.transform = `rotate(${charge * 3.6}deg)`;
+                    document.body.style.backgroundColor = `rgb(${26 + charge*2}, ${26 - charge/4}, ${46 - charge/4})`;
+                    
+                    // Create floating particles
+                    if(charge % 5 === 0) createParticle();
+                } else {
+                    clearInterval(timer);
+                    revealMessage();
+                }
+            }, 30);
+        }
+
+        function endHug() {
+            if(!isHolding) return;
+            isHolding = false;
+            clearInterval(timer);
+            
+            if(charge < 100) {
+                // Reset if let go too early
+                charge = 0;
+                growth = 50;
+                heart.style.fontSize = '50px';
+                heart.innerHTML = '🤍';
+                progress.style.opacity = '0';
+                hint.style.opacity = '0.6';
+                document.body.style.backgroundColor = '#1a1a2e';
             }
         }
 
-        function moveOrb(el, isLeft, clientX) {
-            if (stage.classList.contains('merged')) return;
+        function createParticle() {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 10 + 5 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(p);
             
-            let xPercent = (clientX / window.innerWidth) * 100;
+            p.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-100px) scale(1)', opacity: 0.5 },
+                { transform: 'translateY(-200px) scale(0)', opacity: 0 }
+            ], { duration: 2000 });
             
-            if (isLeft) {
-                if (xPercent < 50) el.style.left = (xPercent - 5) + "%";
-            } else {
-                let rightPercent = 100 - xPercent;
-                if (rightPercent < 50) el.style.right = (rightPercent - 5) + "%";
-            }
-            checkMerge();
+            setTimeout(() => p.remove(), 2000);
         }
 
-        // Mouse Drag
-        document.addEventListener('mousemove', (e) => {
-            if (e.buttons !== 1) return;
-            if (e.target.id === 'orb-megh') moveOrb(megh, true, e.clientX);
-            if (e.target.id === 'orb-jia') moveOrb(jia, false, e.clientX);
-        });
+        function revealMessage() {
+            card.style.display = 'block';
+            card.animate([
+                { transform: 'translate(-50%, -50%) scale(0.5)', opacity: 0 },
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 }
+            ], { duration: 500, fill: 'forwards' });
+        }
 
-        // Touch Drag
-        megh.addEventListener('touchmove', (e) => { e.preventDefault(); moveOrb(megh, true, e.touches[0].clientX); });
-        jia.addEventListener('touchmove', (e) => { e.preventDefault(); moveOrb(jia, false, e.touches[0].clientX); });
+        // Listeners for both Mobile & Desktop
+        zone.addEventListener('mousedown', startHug);
+        window.addEventListener('mouseup', endHug);
+        zone.addEventListener('touchstart', (e) => { e.preventDefault(); startHug(); });
+        window.addEventListener('touchend', endHug);
 
     </script>
 </body>
