@@ -3,223 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hug Day | For Jia ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&family=Sacramento&display=swap" rel="stylesheet">
+    <title>Megh's Station | For Jia ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Montserrat:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --sky: #d0eefb;
-            --snow-white: #ffffff;
-            --snow-shadow: #e3f2fd;
-            --carrot: #ff9800;
-            --heart: #ff4d6d;
+            --radio-body: #ffb3c1;
+            --dial-bg: #4e342e;
+            --glow: #ff4d6d;
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; font-family: 'Quicksand', sans-serif;
-            background: var(--sky); touch-action: none;
+            overflow: hidden; background-color: #ffe5ec;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .winter-bg {
-            position: absolute; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #a2d2ff 0%, #ffffff 80%, #f0f8ff 100%);
-            z-index: 0;
+        .container {
+            width: 100%; height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: radial-gradient(circle, #ffccd5 0%, #ffe5ec 100%);
         }
 
-        /* Snowman Styling */
-        .snowman {
-            position: absolute; bottom: 15%; width: 140px;
-            display: flex; flex-direction: column; align-items: center;
-            z-index: 5; cursor: grab; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.08));
-        }
-
-        #snowman-left { left: 5%; }
-        #snowman-right { right: 5%; }
-
-        .snowball {
-            background: radial-gradient(circle at 35% 35%, var(--snow-white), var(--snow-shadow));
-            border-radius: 50%;
+        /* The Radio Body */
+        .radio {
+            width: 320px; height: 420px;
+            background: var(--radio-body);
+            border-radius: 40px;
+            border: 8px solid #fff;
+            box-shadow: 0 20px 50px rgba(255, 77, 109, 0.3);
+            display: flex; flex-direction: column;
+            align-items: center; padding: 20px;
             position: relative;
-            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.05);
         }
 
-        .head { width: 60px; height: 60px; z-index: 3; }
-        .body-mid { width: 90px; height: 80px; margin-top: -12px; z-index: 2; }
-        .body-base { width: 125px; height: 105px; margin-top: -18px; z-index: 1; }
-
-        /* Face details */
-        .face { position: absolute; top: 20px; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .eye { width: 6px; height: 6px; background: #333; border-radius: 50%; margin: 0 5px; }
-        .nose { 
-            width: 0; height: 0; 
-            border-top: 4px solid transparent; 
-            border-bottom: 4px solid transparent; 
-            border-left: 15px solid var(--carrot);
+        /* Digital Display */
+        .display-screen {
+            width: 90%; height: 80px;
+            background: #222; border-radius: 10px;
+            margin-top: 20px; border: 4px solid #555;
+            position: relative; overflow: hidden;
+            display: flex; align-items: center;
         }
 
-        /* NEW SNOW HANDS */
-        .snow-hand {
-            position: absolute; width: 60px; height: 40px;
-            background: radial-gradient(circle at center, var(--snow-white), var(--snow-shadow));
-            top: 20px; z-index: 4; border-radius: 20px;
-            box-shadow: 2px 5px 10px rgba(0,0,0,0.05);
+        .ticker-text {
+            position: absolute; white-space: nowrap;
+            color: #00ff00; font-family: 'Share+Tech+Mono', monospace;
+            font-size: 1.2rem; text-shadow: 0 0 10px #00ff00;
+            animation: ticker 10s linear infinite;
+            opacity: 0.1; /* Static look until tuned */
         }
 
-        #hand-left { 
-            left: 65px; transform: rotate(-10deg); 
-        }
-        #hand-right { 
-            right: 65px; transform: rotate(10deg); 
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
 
-        /* Center Heart */
-        .heart-container {
-            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 2; pointer-events: none;
+        /* Tuning Dial */
+        .dial-area {
+            margin-top: 50px; position: relative;
+            width: 180px; height: 180px;
+            background: var(--dial-bg); border-radius: 50%;
+            border: 10px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        #heart-emoji {
-            font-size: 100px; opacity: 0; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: grayscale(1);
+        .knob {
+            position: absolute; width: 100%; height: 100%;
+            background: repeating-conic-gradient(from 0deg, #5d4037 0deg 10deg, #4e342e 10deg 20deg);
+            border-radius: 50%; transition: transform 0.1s;
+            display: flex; justify-content: center;
         }
 
-        .hug-active #heart-emoji {
-            opacity: 1; transform: scale(1.3);
-            filter: grayscale(0);
-            animation: pulse 0.8s infinite alternate;
+        .knob-marker {
+            width: 6px; height: 30px; background: var(--glow);
+            border-radius: 10px; margin-top: 10px;
         }
 
-        @keyframes pulse { 
-            from { transform: scale(1.2); } 
-            to { transform: scale(1.5); } 
+        .status-light {
+            width: 15px; height: 15px; border-radius: 50%;
+            background: #550000; margin-top: 30px;
+            transition: background 0.3s;
         }
 
-        /* Message Card */
-        #msg-card {
-            position: absolute; bottom: 5%; width: 85%; left: 7.5%;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
-            padding: 15px; border-radius: 20px;
-            text-align: center; color: #2c3e50; font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            opacity: 0; transform: translateY(20px);
-            transition: all 0.5s; z-index: 10;
+        /* Tuned State */
+        .tuned .ticker-text { opacity: 1; animation-duration: 6s; color: var(--glow); text-shadow: 0 0 10px var(--glow); }
+        .tuned .status-light { background: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        .tuned .display-screen { border-color: var(--glow); }
+
+        .instruction {
+            margin-top: 30px; font-size: 0.8rem; color: #ff8fa3;
+            text-transform: uppercase; letter-spacing: 2px;
         }
-
-        .show-msg { opacity: 1 !important; transform: translateY(0) !important; }
-
-        .snowflake { position: absolute; color: white; top: -20px; pointer-events: none; animation: fall linear infinite; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="winter-bg"></div>
-
-    <div class="heart-container">
-        <div id="heart-emoji">❤️</div>
-    </div>
-
-    <div class="snowman" id="snowman-left">
-        <div class="snowball head">
-            <div class="face">
-                <div class="eye"></div><div class="nose"></div><div class="eye"></div>
+    <div class="container">
+        <div class="radio" id="radio-unit">
+            <div class="display-screen">
+                <div class="ticker-text" id="ticker">TUNING... FIND THE LOVE FREQUENCY... 14.3 FM...</div>
             </div>
-        </div>
-        <div class="snowball body-mid">
-             <div class="snow-hand" id="hand-left"></div>
-        </div>
-        <div class="snowball body-base"></div>
-    </div>
 
-    <div class="snowman" id="snowman-right">
-        <div class="snowball head">
-            <div class="face">
-                <div class="eye"></div><div class="nose" style="transform: rotate(180deg);"></div><div class="eye"></div>
+            <div class="status-light" id="light"></div>
+
+            <div class="dial-area">
+                <div class="knob" id="knob">
+                    <div class="knob-marker"></div>
+                </div>
             </div>
+            
+            <p class="instruction" id="hint">Rotate the dial to find Megh</p>
         </div>
-        <div class="snowball body-mid">
-             <div class="snow-hand" id="hand-right"></div>
-        </div>
-        <div class="snowball body-base"></div>
     </div>
 
-    <div id="msg-card"></div>
+    <audio id="bg-music" loop>
+        <source src="https://www.dropbox.com/scl/fi/6w5ofha5iqmzgcbyoox8c/Kiss-Me-Cadbury-Dairy-Milk-Ad-Song-Lyrics-Vusicly.mp3?rlkey=nmtwnahuj5jk93isd5896ovqu&st=iunvl8q8&raw=1" type="audio/mpeg">
+    </audio>
 
     <script>
-        const sLeft = document.getElementById('snowman-left');
-        const sRight = document.getElementById('snowman-right');
-        const hLeft = document.getElementById('hand-left');
-        const hRight = document.getElementById('hand-right');
-        const msgCard = document.getElementById('msg-card');
+        const knob = document.getElementById('knob');
+        const radio = document.getElementById('radio-unit');
+        const ticker = document.getElementById('ticker');
+        const music = document.getElementById('bg-music');
+        let currentRotation = 0;
+        let isTuned = false;
 
-        const quotes = [
-            "Jia, your hugs are the only thing that can melt Megh's heart! ❄️❤️",
-            "This snowy hug is warmer than any blanket.",
-            "Wrapped in Megh's arms, winter feels like paradise.",
-            "I'm 'snow' lucky to have your hugs, Jia!",
-            "One hug from you is worth a thousand winters.",
-            "Jia, let's melt into this hug together! 😘"
-        ];
+        // The "Love Frequency" is around 180 degrees
+        const targetRotation = 180; 
+        const tolerance = 20;
 
-        let isHugging = false;
+        function handleRotate(e) {
+            const rect = knob.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-        function checkHug() {
-            const rectL = hLeft.getBoundingClientRect();
-            const rectR = hRight.getBoundingClientRect();
+            const deltaX = clientX - centerX;
+            const deltaY = clientY - centerY;
+            
+            let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+            angle = (angle + 360) % 360;
+            
+            knob.style.transform = `rotate(${angle}deg)`;
 
-            // Detect when the fluffy snow-hands touch
-            if (rectR.left - rectL.right < 0) {
-                if (!isHugging) {
-                    isHugging = true;
-                    document.body.classList.add('hug-active');
-                    msgCard.innerText = quotes[Math.floor(Math.random() * quotes.length)];
-                    msgCard.classList.add('show-msg');
+            // Check if tuned
+            if (Math.abs(angle - targetRotation) < tolerance) {
+                if (!isTuned) {
+                    isTuned = true;
+                    radio.classList.add('tuned');
+                    ticker.innerText = "❤️ JIA, YOU ARE TUNED INTO MEGH'S HEART FM... HAPPY VALENTINE'S DAY! ❤️";
+                    music.volume = 1.0;
+                    music.play();
                 }
             } else {
-                isHugging = false;
-                document.body.classList.remove('hug-active');
-                msgCard.classList.remove('show-msg');
+                isTuned = false;
+                radio.classList.remove('tuned');
+                ticker.innerText = "STATIC... SEARCHING... 88.5... 102.1... STATIC...";
+                music.volume = 0.2; // Keep it low like static
             }
         }
 
-        function moveSnowman(snowman, isLeft, clientX) {
-            let xPercent = (clientX / window.innerWidth) * 100;
-            if (isLeft) {
-                if (xPercent < 48) snowman.style.left = (xPercent - 10) + "%";
-            } else {
-                let rightX = 100 - xPercent;
-                if (rightX < 48) snowman.style.right = (rightX - 10) + "%";
-            }
-            checkHug();
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            if (e.buttons !== 1) return;
-            if (e.target.closest('#snowman-left')) moveSnowman(sLeft, true, e.clientX);
-            if (e.target.closest('#snowman-right')) moveSnowman(sRight, false, e.clientX);
+        knob.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            handleRotate(e);
         });
 
-        const touchMove = (e, isLeft) => {
-            e.preventDefault();
-            moveSnowman(isLeft ? sLeft : sRight, isLeft, e.touches[0].clientX);
-        };
+        knob.addEventListener('mousemove', (e) => {
+            if (e.buttons === 1) handleRotate(e);
+        });
 
-        sLeft.addEventListener('touchmove', (e) => touchMove(e, true));
-        sRight.addEventListener('touchmove', (e) => touchMove(e, false));
-
-        function createSnowflake() {
-            const f = document.createElement('div');
-            f.className = 'snowflake';
-            f.innerHTML = '❄';
-            f.style.left = Math.random() * 100 + 'vw';
-            f.style.fontSize = Math.random() * 15 + 10 + 'px';
-            f.style.animationDuration = Math.random() * 3 + 2 + 's';
-            f.style.opacity = Math.random();
-            document.body.appendChild(f);
-            setTimeout(() => f.remove(), 5000);
-        }
-        setInterval(createSnowflake, 300);
+        // Initialize music but muted
+        document.body.addEventListener('click', () => {
+             if(music.paused) {
+                 music.play();
+                 music.volume = 0;
+             }
+        }, {once: true});
     </script>
 </body>
-            </html>
-            
+</html>
