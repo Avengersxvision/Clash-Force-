@@ -447,6 +447,8 @@ select {
     <button class="nav-tab" onclick="showTool('farm')">💰 Farming</button>
     <button class="nav-tab" onclick="showTool('war')">⚔ War</button>
     <button class="nav-tab" onclick="showTool('base')">🏰 Base</button>
+    <button class="nav-tab" onclick="showTool('magic')">🔮 Magic</button>
+    <button class="nav-tab" onclick="showTool('lab')">🧪 Lab</button>
   </div>
 </nav>
 
@@ -483,6 +485,16 @@ select {
       <div class="tc-icon">🏰</div>
       <div class="tc-name">Base Maxing Guide</div>
       <div class="tc-desc">Smart upgrade priority list aligning with the Chief's Journey</div>
+    </div>
+    <div class="tool-card" onclick="showTool('magic')">
+      <div class="tc-icon">🔮</div>
+      <div class="tc-name">Magic Optimizer</div>
+      <div class="tc-desc">Find the true value of Books vs Hammers</div>
+    </div>
+    <div class="tool-card" onclick="showTool('lab')">
+      <div class="tc-icon">🧪</div>
+      <div class="tc-name">Lab Tracker</div>
+      <div class="tc-desc">Calculate total time & cost left in your Lab</div>
     </div>
   </div>
   <div class="bottom-hint">— select a tool above —</div>
@@ -798,6 +810,82 @@ select {
   </div>
 </div>
 
+<div id="page-magic" class="tool-page">
+  <div class="page-header">
+    <button class="back-btn" onclick="showHome()">← Back</button>
+    <span class="page-title">🔮 Magic Items Optimizer</span>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Select Magic Item</div>
+    <select id="m-item" style="width:100%; margin-bottom:10px;">
+      <option value="book">Book (Building/Spells/Heroes/Fighting)</option>
+      <option value="hammer">Hammer (Building/Spells/Heroes/Fighting)</option>
+    </select>
+    <div class="boost-note" style="margin-top:0;">Books save <strong>time</strong>. Hammers save <strong>time AND resources</strong>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Upgrade Details</div>
+    <div class="time-inputs" style="margin-bottom:12px;">
+      <div class="t-block"><label>Days</label><input type="number" id="m-days" placeholder="0"></div>
+      <div class="t-sep">:</div>
+      <div class="t-block"><label>Hours</label><input type="number" id="m-hours" placeholder="0"></div>
+    </div>
+    <div class="res-input-block">
+      <label>Resource Cost</label>
+      <input type="number" id="m-cost" placeholder="e.g. 15000000">
+    </div>
+  </div>
+
+  <div class="err" id="m-err">⚠ Enter time and cost to calculate value.</div>
+  <button class="btn" onclick="magicCalc()">🔮 Calculate Value</button>
+
+  <div class="result-card" id="m-result">
+    <div class="card-label">Value Saved</div>
+    <div class="res-big" id="m-res-big">—</div>
+    <div class="res-rows">
+      <div class="res-row"><span class="rk">Time Saved</span><span class="rv blue" id="m-time-saved">—</span></div>
+      <div class="res-row"><span class="rk">Resources Saved</span><span class="rv green" id="m-res-saved">—</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-lab" class="tool-page">
+  <div class="page-header">
+    <button class="back-btn" onclick="showHome()">← Back</button>
+    <span class="page-title">🧪 Lab Progress Tracker</span>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Remaining Upgrades</div>
+    <div class="res-input-block" style="margin-bottom:12px;">
+      <label>Number of Upgrades Left</label>
+      <input type="number" id="l-count" placeholder="0">
+    </div>
+    <div class="res-input-block" style="margin-bottom:12px;">
+      <label>Avg Days per Upgrade</label>
+      <input type="number" id="l-days" placeholder="0">
+    </div>
+    <div class="res-input-block">
+      <label>Avg Cost per Upgrade</label>
+      <input type="number" id="l-cost" placeholder="0">
+    </div>
+  </div>
+
+  <div class="err" id="l-err">⚠ Fill in all fields.</div>
+  <button class="btn" onclick="labCalc()">🧪 Calculate Lab Total</button>
+
+  <div class="result-card" id="l-result">
+    <div class="card-label">Lab Summary</div>
+    <div class="res-big" id="l-res-big">—</div>
+    <div class="res-rows">
+      <div class="res-row"><span class="rk">Total Time Required</span><span class="rv blue" id="l-total-time">—</span></div>
+      <div class="res-row"><span class="rk">Total Resource Cost</span><span class="rv purple" id="l-total-cost">—</span></div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <script>
@@ -815,7 +903,7 @@ function showTool(id) {
   document.querySelectorAll('.tool-page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  const map = {build:1,hero:2,farm:3,war:4,base:5};
+  const map = {build:1,hero:2,farm:3,war:4,base:5,magic:6,lab:7};
   document.querySelectorAll('.nav-tab')[map[id]].classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1161,6 +1249,64 @@ function baseGuide() {
   res.style.display = 'block';
   res.style.animation = 'rise .4s ease both';
   res.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ═══════════════════════════════════════════
+// MAGIC ITEMS OPTIMIZER
+// ═══════════════════════════════════════════
+function magicCalc() {
+  const item = document.getElementById('m-item').value;
+  const days = parseFloat(document.getElementById('m-days').value)||0;
+  const hours = parseFloat(document.getElementById('m-hours').value)||0;
+  const cost = parseFloat(document.getElementById('m-cost').value)||0;
+
+  const err = document.getElementById('m-err');
+  const res = document.getElementById('m-result');
+  err.classList.remove('show'); res.classList.remove('show');
+
+  if((days===0 && hours===0) || cost===0) { err.classList.add('show'); return; }
+
+  const totalSecs = days*86400 + hours*3600;
+  
+  document.getElementById('m-time-saved').textContent = fmt(totalSecs);
+  
+  if(item === 'book') {
+    document.getElementById('m-res-big').textContent = "Time Skipped!";
+    document.getElementById('m-res-saved').textContent = "0 (Books don't save resources)";
+    document.getElementById('m-res-saved').className = "rv red";
+  } else {
+    document.getElementById('m-res-big').textContent = "Max Value!";
+    document.getElementById('m-res-saved').textContent = fmtNum(cost);
+    document.getElementById('m-res-saved').className = "rv green";
+  }
+  
+  res.classList.add('show');
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ═══════════════════════════════════════════
+// LAB PROGRESS TRACKER
+// ═══════════════════════════════════════════
+function labCalc() {
+  const count = parseFloat(document.getElementById('l-count').value)||0;
+  const days = parseFloat(document.getElementById('l-days').value)||0;
+  const cost = parseFloat(document.getElementById('l-cost').value)||0;
+
+  const err = document.getElementById('l-err');
+  const res = document.getElementById('l-result');
+  err.classList.remove('show'); res.classList.remove('show');
+
+  if(count===0 || days===0 || cost===0) { err.classList.add('show'); return; }
+
+  const totalSecs = count * days * 86400;
+  const totalCost = count * cost;
+
+  document.getElementById('l-res-big').textContent = count + " Upgrades";
+  document.getElementById('l-total-time').textContent = fmt(totalSecs);
+  document.getElementById('l-total-cost').textContent = fmtNum(totalCost);
+
+  res.classList.add('show');
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 </script>
 </body>
