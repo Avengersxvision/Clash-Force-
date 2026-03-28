@@ -369,6 +369,7 @@ select {
   background:var(--bg); border:1px solid var(--border); border-radius:3px;
   color:var(--muted); font-family:'Cinzel',serif; font-size:.7rem;
   font-weight:700; padding:7px 12px; cursor:pointer; transition:all .15s;
+  flex:1; min-width:60px; text-align:center;
 }
 .hero-tab:hover { border-color:var(--amber); color:var(--gold); }
 .hero-tab.active { background:var(--amber); border-color:var(--gold); color:#0d0a06; }
@@ -466,7 +467,7 @@ select {
     <div class="tool-card" onclick="showTool('hero')">
       <div class="tc-icon">🦸</div>
       <div class="tc-name">Hero Tracker</div>
-      <div class="tc-desc">Track upgrade progress for all 5 heroes</div>
+      <div class="tc-desc">Track upgrade progress for all 6 heroes</div>
     </div>
     <div class="tool-card" onclick="showTool('farm')">
       <div class="tc-icon">💰</div>
@@ -564,17 +565,18 @@ select {
   <div class="card">
     <div class="card-label">Select Hero</div>
     <div class="hero-tabs">
-      <button class="hero-tab active" onclick="hSelectHero(0,this)">👑 Barbarian King</button>
-      <button class="hero-tab" onclick="hSelectHero(1,this)">🏹 Archer Queen</button>
-      <button class="hero-tab" onclick="hSelectHero(2,this)">🔵 Grand Warden</button>
-      <button class="hero-tab" onclick="hSelectHero(3,this)">⚡ Royal Champion</button>
-      <button class="hero-tab" onclick="hSelectHero(4,this)">🐉 Minion Prince</button>
+      <button class="hero-tab active" onclick="hSelectHero(0,this)">👑 BK</button>
+      <button class="hero-tab" onclick="hSelectHero(1,this)">🏹 AQ</button>
+      <button class="hero-tab" onclick="hSelectHero(2,this)">🔵 GW</button>
+      <button class="hero-tab" onclick="hSelectHero(3,this)">⚡ RC</button>
+      <button class="hero-tab" onclick="hSelectHero(4,this)">🦇 MP</button>
+      <button class="hero-tab" onclick="hSelectHero(5,this)">🐉 DD</button>
     </div>
     <div class="hero-info">
       <div class="hero-emoji" id="h-emoji">👑</div>
       <div class="hero-details">
         <div class="hero-name" id="h-name">Barbarian King</div>
-        <div class="hero-max" id="h-max">Max Level: 100 · TH 17</div>
+        <div class="hero-max" id="h-max">Max Level: 105 · TH 18</div>
       </div>
     </div>
   </div>
@@ -587,7 +589,7 @@ select {
     </div>
     <div class="level-row">
       <label>Target Lvl</label>
-      <input type="number" id="h-tar" min="1" placeholder="100" oninput="hCalc()">
+      <input type="number" id="h-tar" min="1" placeholder="105" oninput="hCalc()">
     </div>
     <div class="prog-bar-wrap" id="h-prog-wrap" style="display:none">
       <div class="prog-label">
@@ -700,43 +702,47 @@ select {
     <div class="building-list">
       <div class="building-row">
         <label>Town Hall</label>
-        <input type="number" id="ww-th" min="1" max="17" placeholder="17" oninput="warCalc()">
+        <input type="number" id="ww-th" min="1" max="18" placeholder="18" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Barbarian King</label>
-        <input type="number" id="ww-bk" min="0" max="100" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-bk" min="0" max="105" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Archer Queen</label>
-        <input type="number" id="ww-aq" min="0" max="100" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-aq" min="0" max="105" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Grand Warden</label>
-        <input type="number" id="ww-gw" min="0" max="75" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-gw" min="0" max="80" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Royal Champion</label>
-        <input type="number" id="ww-rc" min="0" max="50" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-rc" min="0" max="55" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Minion Prince</label>
-        <input type="number" id="ww-mp" min="0" max="25" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-mp" min="0" max="95" placeholder="0" oninput="warCalc()">
+      </div>
+      <div class="building-row">
+        <label>Dragon Duke</label>
+        <input type="number" id="ww-dd" min="0" max="25" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Eagle Artillery (Level)</label>
-        <input type="number" id="ww-ea" min="0" max="7" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-ea" min="0" max="8" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Scattershot (Level)</label>
-        <input type="number" id="ww-ss" min="0" max="5" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-ss" min="0" max="6" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>Inferno Tower (Level)</label>
-        <input type="number" id="ww-it" min="0" max="10" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-it" min="0" max="11" placeholder="0" oninput="warCalc()">
       </div>
       <div class="building-row">
         <label>X-Bow (Level)</label>
-        <input type="number" id="ww-xb" min="0" max="11" placeholder="0" oninput="warCalc()">
+        <input type="number" id="ww-xb" min="0" max="12" placeholder="0" oninput="warCalc()">
       </div>
     </div>
   </div>
@@ -776,6 +782,7 @@ select {
         <option value="15">Town Hall 15</option>
         <option value="16">Town Hall 16</option>
         <option value="17">Town Hall 17</option>
+        <option value="18">Town Hall 18</option>
       </select>
     </div>
   </div>
@@ -911,11 +918,12 @@ function buildCalc() {
 // HERO TRACKER
 // ═══════════════════════════════════════════
 const HEROES = [
-  { name:'Barbarian King', emoji:'👑', maxLvl:100, dePerLvl:5500, hoursPerLvl:7 },
-  { name:'Archer Queen',   emoji:'🏹', maxLvl:100, dePerLvl:6000, hoursPerLvl:7 },
-  { name:'Grand Warden',   emoji:'🔵', maxLvl:75,  dePerLvl:0,    hoursPerLvl:8, elixPerLvl:7500000 },
-  { name:'Royal Champion', emoji:'⚡', maxLvl:50,  dePerLvl:6500, hoursPerLvl:8 },
-  { name:'Minion Prince',  emoji:'🐉', maxLvl:25,  dePerLvl:4500, hoursPerLvl:6 },
+  { name:'Barbarian King', emoji:'👑', maxLvl:105, dePerLvl:5500, hoursPerLvl:7 },
+  { name:'Archer Queen',   emoji:'🏹', maxLvl:105, dePerLvl:6000, hoursPerLvl:7 },
+  { name:'Grand Warden',   emoji:'🔵', maxLvl:80,  dePerLvl:0,    hoursPerLvl:8, elixPerLvl:7500000 },
+  { name:'Royal Champion', emoji:'⚡', maxLvl:55,  dePerLvl:6500, hoursPerLvl:8 },
+  { name:'Minion Prince',  emoji:'🦇', maxLvl:95,  dePerLvl:4500, hoursPerLvl:6 },
+  { name:'Dragon Duke',    emoji:'🐉', maxLvl:25,  dePerLvl:8000, hoursPerLvl:8 }
 ];
 let hIdx = 0;
 
@@ -926,7 +934,7 @@ function hSelectHero(i, el) {
   el.classList.add('active');
   document.getElementById('h-emoji').textContent = h.emoji;
   document.getElementById('h-name').textContent = h.name;
-  document.getElementById('h-max').textContent = `Max Level: ${h.maxLvl} · TH 17`;
+  document.getElementById('h-max').textContent = `Max Level: ${h.maxLvl} · TH 18`;
   document.getElementById('h-tar').placeholder = h.maxLvl;
   hCalc();
 }
@@ -1023,14 +1031,15 @@ function warCalc() {
   const gw  = parseInt(document.getElementById('ww-gw').value)||0;
   const rc  = parseInt(document.getElementById('ww-rc').value)||0;
   const mp  = parseInt(document.getElementById('ww-mp').value)||0;
+  const dd  = parseInt(document.getElementById('ww-dd').value)||0;
   const ea  = parseInt(document.getElementById('ww-ea').value)||0;
   const ss  = parseInt(document.getElementById('ww-ss').value)||0;
   const it  = parseInt(document.getElementById('ww-it').value)||0;
   const xb  = parseInt(document.getElementById('ww-xb').value)||0;
 
-  const thWeights = [0,500,1000,1500,2000,3000,4000,6000,8000,12000,16000,22000,30000,40000,55000,70000,90000,110000];
+  const thWeights = [0,500,1000,1500,2000,3000,4000,6000,8000,12000,16000,22000,30000,40000,55000,70000,90000,110000,140000];
   const thW = th>0&&th<thWeights.length ? thWeights[th] : 0;
-  const heroW = bk*200 + aq*220 + gw*180 + rc*200 + mp*150;
+  const heroW = bk*200 + aq*220 + gw*180 + rc*200 + mp*150 + dd*300;
   const defW  = ea*3000 + ss*2500 + it*800 + xb*600;
   const total = thW + heroW + defW;
 
@@ -1045,7 +1054,8 @@ function warCalc() {
   else if(total<25000){ tier='Mid Weight 🟡'; bracket='TH9–TH10 range'; }
   else if(total<55000){ tier='Heavy Weight 🟠'; bracket='TH11–TH12 range'; }
   else if(total<90000){ tier='War Machine 🔴'; bracket='TH13–TH14 range'; }
-  else { tier='Legendary ⚔'; bracket='TH15–TH17 range'; }
+  else if(total<130000){ tier='Legendary ⚔'; bracket='TH15–TH16 range'; }
+  else { tier='Mythic 🐉'; bracket='TH17–TH18 range'; }
 
   document.getElementById('ww-tier').textContent = tier;
   document.getElementById('ww-bracket').textContent = bracket;
@@ -1118,7 +1128,7 @@ const BASE_GUIDE = {
     {title:'Walls to Level 14', desc:'Gold walls look impressive and add decent HP.', badge:'medium'},
   ],
   15: [
-    {title:'Minion Prince (unlock 🐉)', desc:'New hero. Start leveling immediately alongside other heroes.', badge:'critical'},
+    {title:'Minion Prince (unlock 🦇)', desc:'New hero. Start leveling immediately alongside other heroes.', badge:'critical'},
     {title:'Heroes to 90/90/65/40/10', desc:'Five heroes now — rotate upgrades and use Books wisely.', badge:'critical'},
     {title:'Spell Tower (NEW defense)', desc:'Brand new defense type at TH15. Build and max it early.', badge:'critical'},
     {title:'Monolith (NEW defense)', desc:'Extremely powerful, high weight. Build both immediately.', badge:'critical'},
@@ -1143,6 +1153,14 @@ const BASE_GUIDE = {
     {title:'Walls to Level 17', desc:'Max walls. Complete compartments methodically.', badge:'medium'},
     {title:'Clan Capital contributions', desc:'At TH17 you can fully contribute to Clan Capital — don\'t neglect it.', badge:'optional'},
   ],
+  18: [
+    {title:'Dragon Duke (unlock 🐉)', desc:'New flying hero at TH18. Unlocks powerful air attack synergies.', badge:'critical'},
+    {title:'Revenge Tower (NEW defense)', desc:'Extremely powerful new defense at TH18. Prioritize building and maxing it.', badge:'critical'},
+    {title:'Super Wizard Towers', desc:'Merge your level 17 Wizard Towers into Super Wizard Towers for massive area damage.', badge:'critical'},
+    {title:'Heroes to 105/105/95/80/55/25', desc:'Max out your 6 heroes. Focus on Dragon Duke and Archer Queen first.', badge:'critical'},
+    {title:'Town Hall Weapon upgrades', desc:'Max the TH18 weapon (Giga Poison/Smasher) for maximum defensive power.', badge:'high'},
+    {title:'Walls to Level 18', desc:'Upgrade your core walls to Level 18 to slow down ground assaults.', badge:'medium'},
+  ]
 };
 
 function baseGuide() {
