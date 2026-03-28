@@ -279,7 +279,7 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance:none; }
 input[type="number"]:focus, select:focus, input[type="text"]:focus {
   border-color:var(--gold); box-shadow:0 0 0 2px rgba(232,184,75,.18);
 }
-.four-fields input[type="number"] { font-size:1.3rem; padding:10px 2px; }
+.four-fields input[type="text"] { font-size:1.3rem; padding:10px 2px; }
 .four-fields .t-sep { font-size:1.4rem; padding:0 1px; padding-bottom:6px; }
 
 .t-unit {
@@ -482,7 +482,7 @@ select {
     <div class="tool-card" onclick="showTool('base')" style="grid-column:span 2">
       <div class="tc-icon">🏰</div>
       <div class="tc-name">Base Maxing Guide</div>
-      <div class="tc-desc">Smart upgrade priority list for your Town Hall level — what to build first and why</div>
+      <div class="tc-desc">Smart upgrade priority list aligning with the Chief's Journey</div>
     </div>
   </div>
   <div class="bottom-hint">— select a tool above —</div>
@@ -497,13 +497,13 @@ select {
   <div class="card">
     <div class="card-label">Build Duration</div>
     <div class="time-inputs four-fields">
-      <div class="t-block"><label>Days</label><input type="number" id="b-days" min="0" max="999" placeholder="00"><div class="t-unit">DD</div></div>
+      <div class="t-block"><label>Days</label><input type="text" inputmode="numeric" id="b-days" maxlength="2" placeholder="00" oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length===2) document.getElementById('b-hours').focus();"><div class="t-unit">DD</div></div>
       <div class="t-sep">:</div>
-      <div class="t-block"><label>Hours</label><input type="number" id="b-hours" min="0" max="23" placeholder="00"><div class="t-unit">HH</div></div>
+      <div class="t-block"><label>Hours</label><input type="text" inputmode="numeric" id="b-hours" maxlength="2" placeholder="00" oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length===2) document.getElementById('b-mins').focus();"><div class="t-unit">HH</div></div>
       <div class="t-sep">:</div>
-      <div class="t-block"><label>Mins</label><input type="number" id="b-mins" min="0" max="59" placeholder="00"><div class="t-unit">MM</div></div>
+      <div class="t-block"><label>Mins</label><input type="text" inputmode="numeric" id="b-mins" maxlength="2" placeholder="00" oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length===2) document.getElementById('b-secs').focus();"><div class="t-unit">MM</div></div>
       <div class="t-sep">:</div>
-      <div class="t-block"><label>Secs</label><input type="number" id="b-secs" min="0" max="59" placeholder="00"><div class="t-unit">SS</div></div>
+      <div class="t-block"><label>Secs</label><input type="text" inputmode="numeric" id="b-secs" maxlength="2" placeholder="00" oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length===2) document.getElementById('b-bh').focus();"><div class="t-unit">SS</div></div>
     </div>
   </div>
 
@@ -533,9 +533,9 @@ select {
   <div class="card">
     <div class="card-label">⚡ Booster Time Remaining</div>
     <div class="time-inputs">
-      <div class="t-block"><label>Hours</label><input type="number" id="b-bh" min="0" max="999" placeholder="00"><div class="t-unit">HH</div></div>
+      <div class="t-block"><label>Hours</label><input type="text" inputmode="numeric" id="b-bh" maxlength="2" placeholder="00" oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length===2) document.getElementById('b-bm').focus();"><div class="t-unit">HH</div></div>
       <div class="t-sep">:</div>
-      <div class="t-block"><label>Minutes</label><input type="number" id="b-bm" min="0" max="59" placeholder="00"><div class="t-unit">MM</div></div>
+      <div class="t-block"><label>Minutes</label><input type="text" inputmode="numeric" id="b-bm" maxlength="2" placeholder="00" oninput="this.value=this.value.replace(/[^0-9]/g,'');"><div class="t-unit">MM</div></div>
     </div>
     <div class="boost-note">During boost, time runs at <strong>speed×</strong>. After it expires, upgrading continues at 1×. Leave blank to assume boost covers the whole upgrade.</div>
   </div>
@@ -1066,100 +1066,70 @@ function warCalc() {
 // ═══════════════════════════════════════════
 const BASE_GUIDE = {
   8: [
-    {title:'Dragon & Hog Rider unlock', desc:'Unlock Dragons and Hog Riders — they define TH8 attack strategy. Max them ASAP.', badge:'critical'},
-    {title:'Heroes — Barbarian King', desc:'Keep BK upgrading constantly. Every level matters for attack power.', badge:'critical'},
-    {title:'Air Defenses (×4)', desc:'Your main defense vs Dragons. Max all 4 before other defenses.', badge:'critical'},
-    {title:'Dark Elixir Storage & Drills', desc:'More DE = faster hero upgrades. Max storages and drills early.', badge:'high'},
-    {title:'Mortars & X-Bows (unlock)', desc:'Mortar spam walls ground attackers. X-Bow unlocked at TH9 — prep your defenses now.', badge:'high'},
-    {title:'Walls to Level 8', desc:'Upgrade all walls to level 8 — they provide significant HP boost.', badge:'medium'},
-    {title:'Gold & Elixir Storages', desc:'Higher caps mean more reserve for upgrades. Upgrade when convenient.', badge:'medium'},
+    {title:"Chief's Journey: Blacksmith Unlock", desc:"Unlock the Blacksmith to gain access to powerful Hero Equipment. Upgrading it is a critical priority.", badge:"critical"},
+    {title:"Chief's Journey: Dark Spells", desc:"Unlock Poison and Earthquake spells by upgrading your Dark Spell Factory.", badge:"high"},
+    {title:"Air Defenses & Dragons", desc:"TH8 is dominated by Dragon attacks. Max all 4 Air Defenses.", badge:"high"},
+    {title:"Barbarian King", desc:"Push your BK levels up continuously. Every stat point matters.", badge:"medium"},
   ],
   9: [
-    {title:'Heroes — Barbarian King & Archer Queen', desc:'AQ is unlocked at TH9. Prioritize both heroes above everything else.', badge:'critical'},
-    {title:'X-Bows (×2)', desc:'Brand new defense — huge war weight and massive DPS. Max immediately.', badge:'critical'},
-    {title:'Golem & Witch (troops)', desc:'Unlocking Golem + Witch opens GoWiPe/GoWiWi — dominant TH9 attack combos.', badge:'critical'},
-    {title:'Air Defenses max', desc:'Protect against Dragonlion attacks in wars.', badge:'high'},
-    {title:'Dark Elixir Drills ×2', desc:'Both drills running = passive DE income. Max them.', badge:'high'},
-    {title:'Mortars to lvl 7', desc:'Solid anti-3-star defense against mass goblin attacks.', badge:'medium'},
-    {title:'Walls to Level 9', desc:'Level 9 walls are a significant jump. Prioritize inner compartments.', badge:'medium'},
-    {title:'Spell Factory upgrades', desc:'Unlock Earthquake and Haste spells — essential for GoHo and LavaLoon.', badge:'optional'},
+    {title:"Chief's Journey: Archer Queen Unlock", desc:"The AQ dictates TH9 attacks. Build her immediately and keep her upgrading.", badge:"critical"},
+    {title:"Chief's Journey: X-Bows (×2)", desc:"Brand new rapid-fire defenses. Huge war weight but massive DPS. Max immediately.", badge:"critical"},
+    {title:"Dark Elixir Drills", desc:"You need massive amounts of DE for two heroes now. Max your drills.", badge:"high"},
+    {title:"Lava Hound & Balloon", desc:"LavaLoon is arguably the strongest TH9 attack strategy. Upgrade them in the lab.", badge:"medium"},
   ],
   10: [
-    {title:'Inferno Towers (×2)', desc:'The single biggest defensive upgrade at TH10. Max both before anything else.', badge:'critical'},
-    {title:'Heroes to 40/40', desc:'BK 40, AQ 40 — the benchmark for competitive TH10 attacks.', badge:'critical'},
-    {title:'Miner & Bowler troops', desc:'Unlock Miners and Bowlers — they power the best TH10 attack strategies.', badge:'critical'},
-    {title:'Grand Warden (unlock at 50% through TH10)', desc:'Starts unlocking mid-TH10. Begin leveling immediately.', badge:'high'},
-    {title:'Air Sweepers (×2)', desc:'Essential anti-air. Max them early.', badge:'high'},
-    {title:'Walls to Level 10', desc:'Level 10 is a major wall tier. Do compartments first.', badge:'medium'},
-    {title:'Dark Elixir Storage max', desc:'More DE cap = smoother hero upgrades without losing overflow.', badge:'medium'},
+    {title:"Chief's Journey: Inferno Towers (×2)", desc:"The single biggest defensive upgrade at TH10. Max both before anything else.", badge:"critical"},
+    {title:"Chief's Journey: Siege Machines", desc:"Prepare your Clan Castle to receive Siege Machines from clanmates.", badge:"critical"},
+    {title:"Miner & Bowler troops", desc:"Unlock Miners and Bowlers — they power the best TH10 attack strategies.", badge:"high"},
+    {title:"Heroes to 40/40", desc:"BK 40, AQ 40 — the benchmark for competitive TH10 attacks.", badge:"high"},
   ],
   11: [
-    {title:'Eagle Artillery (unlock)', desc:'Highest weight, highest DPS defense in the game. Your top priority.', badge:'critical'},
-    {title:'Heroes to 50/50/20', desc:'Grand Warden becomes significant now. Balance all 3 heroes.', badge:'critical'},
-    {title:'Electro Dragon (unlock)', desc:'EDragon + Balloons = dominant 3-star TH11 strategy.', badge:'critical'},
-    {title:'Inferno Towers max', desc:'Max Multi-Inferno shreds armies. Keep these upgraded.', badge:'high'},
-    {title:'Royal Champion (unlock near TH11 end)', desc:'RC unlocks at TH13 but prep your DE income now.', badge:'high'},
-    {title:'Walls to Level 11', desc:'Start with inner compartments around key defenses.', badge:'medium'},
-    {title:'Clone & Freeze Spells', desc:'Essential for EDragon attacks. Max spell factory early.', badge:'medium'},
+    {title:"Chief's Journey: Grand Warden Unlock", desc:"The Warden's aura and ability completely alter attacks. Get him ASAP.", badge:"critical"},
+    {title:"Chief's Journey: Eagle Artillery", desc:"Highest weight, highest DPS defense in the game at this level. Priority build.", badge:"critical"},
+    {title:"Electro Dragon (unlock)", desc:"EDragon + Balloons = dominant 3-star TH11 strategy.", badge:"high"},
+    {title:"Heroes to 50/50/20", desc:"Balance all 3 heroes and keep them sleeping.", badge:"high"},
   ],
   12: [
-    {title:'Scattershots (×2) — NEW', desc:'Massive war weight, massive DPS. Build and max both immediately upon TH12.', badge:'critical'},
-    {title:'Heroes to 65/65/40', desc:'Hero levels snowball. Never stop upgrading heroes.', badge:'critical'},
-    {title:'Giga Tesla (TH12 upgrade)', desc:'Upgrade your Town Hall itself — each Giga Tesla level adds significant defense.', badge:'critical'},
-    {title:'Workshop — Siege Machines', desc:'Unlock all 4 Siege Machines. Wall Wrecker and Log Launcher are essential.', badge:'high'},
-    {title:'Yeti & Ice Golem troops', desc:'Yeti Smash is the top TH12 strategy. Unlock and max Yetis first.', badge:'high'},
-    {title:'Walls to Level 12', desc:'Level 12 walls look intimidating for attackers. Focus inner compartments.', badge:'medium'},
+    {title:"Chief's Journey: Town Hall Weapon", desc:"Your TH now fights back. Max the Giga Tesla to trigger its death bomb.", badge:"critical"},
+    {title:"Chief's Journey: Workshop Unlock", desc:"Unlock the ability to build your own Siege Machines (Wall Wrecker & Blimp).", badge:"critical"},
+    {title:"Heroes to 65/65/40", desc:"Hero levels snowball. Never stop upgrading.", badge:"high"},
+    {title:"Yeti troops", desc:"Yeti Smash is the top TH12 strategy. Max them first.", badge:"medium"},
   ],
   13: [
-    {title:'Royal Champion (unlock ⚡)', desc:'New hero at TH13. Start leveling RC immediately — aim for 20+ before moving on.', badge:'critical'},
-    {title:'Scattershots max', desc:'Keep your Scattershots maxed — they heavily influence matchmaking.', badge:'critical'},
-    {title:'Heroes to 75/75/50/20', desc:'Four heroes to manage now. Prioritize AQ and RC.', badge:'critical'},
-    {title:'Giga Inferno upgrades', desc:'TH13 Town Hall gets Giga Inferno. Upgrade it fully.', badge:'high'},
-    {title:'Super Troops', desc:'Unlock all Super Troop upgrades — Super Witch and Super Archer are top tier.', badge:'high'},
-    {title:'Walls to Level 13', desc:'Invisible walls are a psychological barrier for attackers.', badge:'medium'},
-    {title:'Dragon Rider unlock', desc:'Dragon Rider + LavaLoon is a strong TH13 air combo.', badge:'optional'},
+    {title:"Chief's Journey: Royal Champion Unlock", desc:"New hero! Start leveling the RC immediately — her defense-targeting is game-changing.", badge:"critical"},
+    {title:"Chief's Journey: Scattershots (×2)", desc:"Devastating splash damage that hits air and ground. Build and max instantly.", badge:"critical"},
+    {title:"Giga Inferno upgrades", desc:"The TH13 weapon is a Multi-Inferno. Upgrade it fully.", badge:"high"},
+    {title:"Heroes to 75/75/50/25", desc:"Four heroes to manage now. Prioritize AQ and RC.", badge:"high"},
   ],
   14: [
-    {title:'Pets (unlock all 4)', desc:'Pets are game-changing. L.A.S.S.I, Unicorn, Electro Owl, Mighty Yak — all strong.', badge:'critical'},
-    {title:'Heroes to 80/80/55/30', desc:'Pet House and hero upgrades compete for DE. Plan your queue carefully.', badge:'critical'},
-    {title:'Giga Inferno max', desc:'TH14 Giga Inferno adds powerful bomb on death. Keep it maxed.', badge:'critical'},
-    {title:'Super Dragon (unlock)', desc:'Super Dragon air attack is dominant at TH14. Priority troop upgrade.', badge:'high'},
-    {title:'All Pets to level 10+', desc:'Each pet level meaningfully improves your attack. Farm DE aggressively.', badge:'high'},
-    {title:'Walls to Level 14', desc:'Gold walls look impressive and add decent HP.', badge:'medium'},
+    {title:"Chief's Journey: Pet House Unlock", desc:"Pets are a massive power spike. Unlock L.A.S.S.I, Electro Owl, Mighty Yak, and Unicorn.", badge:"critical"},
+    {title:"Chief's Journey: Builder's Huts Weaponized", desc:"Builders now repair buildings during combat and shoot back. Upgrade them all.", badge:"critical"},
+    {title:"Giga Inferno max", desc:"TH14 adds a powerful poison bomb on death. Keep it maxed.", badge:"high"},
+    {title:"Pets to level 10", desc:"Each pet level meaningfully improves your attack. Farm DE aggressively.", badge:"medium"},
   ],
   15: [
-    {title:'Minion Prince (unlock 🦇)', desc:'New hero. Start leveling immediately alongside other heroes.', badge:'critical'},
-    {title:'Heroes to 90/90/65/40/10', desc:'Five heroes now — rotate upgrades and use Books wisely.', badge:'critical'},
-    {title:'Spell Tower (NEW defense)', desc:'Brand new defense type at TH15. Build and max it early.', badge:'critical'},
-    {title:'Monolith (NEW defense)', desc:'Extremely powerful, high weight. Build both immediately.', badge:'critical'},
-    {title:'Root Rider (unlock)', desc:'Root Rider is one of the strongest ground troops ever added. Max it.', badge:'high'},
-    {title:'Pets to level 15+', desc:'Continue pet upgrades — they scale well into TH15 attack.', badge:'high'},
-    {title:'Walls to Level 15', desc:'Diamond walls. Focus on inner compartments around Monolith.', badge:'medium'},
+    {title:"Chief's Journey: Monolith Unlock", desc:"Deals percentage-based damage to heroes/tanks. Extremely powerful.", badge:"critical"},
+    {title:"Chief's Journey: Spell Towers", desc:"Select between Rage, Poison, or Invisibility to cast defensively.", badge:"critical"},
+    {title:"Minion Prince (unlock 🦇)", desc:"New hero. Start leveling immediately alongside other heroes.", badge:"critical"},
+    {title:"Root Rider (unlock)", desc:"One of the strongest ground troops ever added. Max it.", badge:"high"},
   ],
   16: [
-    {title:'Heroes to 95/95/70/45/20', desc:'Near-max heroes at TH16 define whether you 3-star consistently.', badge:'critical'},
-    {title:'Giga Inferno upgrades (TH16)', desc:'New TH upgrade levels — each adds meaningful death damage.', badge:'critical'},
-    {title:'New defenses (Ricochet Cannon, etc)', desc:'Any new defenses unlocked at TH16 should be built immediately.', badge:'critical'},
-    {title:'Super Witch max', desc:'Super Witch Bats strategy is the dominant 3-star approach. Max troops.', badge:'high'},
-    {title:'All Pets to level 20', desc:'Max pets are a significant power spike for 3-star attacks.', badge:'high'},
-    {title:'Walls to Level 16', desc:'Max walls at TH16. Inner core always first.', badge:'medium'},
-    {title:'All Siege Machines max', desc:'Siege Barracks and Flame Flinger are underrated — keep them maxed.', badge:'optional'},
+    {title:"Chief's Journey: Merged Defenses", desc:"Merge your Archer Towers and Cannons into Multi-Archer Towers and Ricochet Cannons.", badge:"critical"},
+    {title:"Chief's Journey: Fox Pet", desc:"Unlock the Spirit Fox for amazing invisibility synergy.", badge:"critical"},
+    {title:"Giga Inferno upgrades", desc:"New TH upgrade levels — each adds meaningful death damage.", badge:"high"},
+    {title:"Super Witch max", desc:"Super Witch Bats strategy is highly reliable.", badge:"medium"},
   ],
   17: [
-    {title:'New TH17 defenses first', desc:'Always build new defenses immediately — they add war weight and real protection.', badge:'critical'},
-    {title:'Heroes to max', desc:'Push all 5 heroes to their TH17 max. This is end-game hero investment.', badge:'critical'},
-    {title:'New troops & spells', desc:'Any new troop/spell unlocks at TH17 should be researched immediately.', badge:'critical'},
-    {title:'Continue Pet upgrades', desc:'Pets don\'t stop scaling — keep farming DE for pet levels.', badge:'high'},
-    {title:'Walls to Level 17', desc:'Max walls. Complete compartments methodically.', badge:'medium'},
-    {title:'Clan Capital contributions', desc:'At TH17 you can fully contribute to Clan Capital — don\'t neglect it.', badge:'optional'},
+    {title:"Chief's Journey: Inferno Artillery", desc:"Merge Inferno Towers into massive artillery cannons. Top priority.", badge:"critical"},
+    {title:"Heroes to max", desc:"Push your 5 heroes. This is end-game hero investment.", badge:"critical"},
+    {title:"New troops & spells", desc:"Any new troop/spell unlocks at TH17 should be researched immediately.", badge:"high"},
+    {title:"Walls to Level 17", desc:"Max walls to stall massive ground armies.", badge:"medium"},
   ],
   18: [
-    {title:'Dragon Duke (unlock 🐉)', desc:'New flying hero at TH18. Unlocks powerful air attack synergies.', badge:'critical'},
-    {title:'Revenge Tower (NEW defense)', desc:'Extremely powerful new defense at TH18. Prioritize building and maxing it.', badge:'critical'},
-    {title:'Super Wizard Towers', desc:'Merge your level 17 Wizard Towers into Super Wizard Towers for massive area damage.', badge:'critical'},
-    {title:'Heroes to 105/105/95/80/55/25', desc:'Max out your 6 heroes. Focus on Dragon Duke and Archer Queen first.', badge:'critical'},
-    {title:'Town Hall Weapon upgrades', desc:'Max the TH18 weapon (Giga Poison/Smasher) for maximum defensive power.', badge:'high'},
-    {title:'Walls to Level 18', desc:'Upgrade your core walls to Level 18 to slow down ground assaults.', badge:'medium'},
+    {title:"Chief's Journey: Dragon Duke (🐉)", desc:"New flying hero! Unlocks massive air attack synergies and provides aerial tanking.", badge:"critical"},
+    {title:"Chief's Journey: Revenge Tower", desc:"Extremely powerful new defense that ramps up damage over time.", badge:"critical"},
+    {title:"Chief's Journey: Super Wizard Towers", desc:"Merge your highest Wizard Towers into Super Wizard Towers for devastating chain damage.", badge:"critical"},
+    {title:"Heroes to 105/105/95/80/55/25", desc:"Max out your 6 heroes. Focus on the new Dragon Duke.", badge:"high"},
   ]
 };
 
