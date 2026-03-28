@@ -1386,7 +1386,7 @@ async function plannerFetch() {
   listEl.innerHTML = "Loading...";
 
   try {
-    const res = await fetch(`/api/player?tag=${tag}`);
+    const res = await fetch(`/api/player?tag=${encodeURIComponent(tag)}`);
     const data = await res.json();
 
     if (data.error) {
