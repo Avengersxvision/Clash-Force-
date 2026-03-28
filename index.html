@@ -447,7 +447,7 @@ select {
     <button class="nav-tab" onclick="showTool('farm')">💰 Farming</button>
     <button class="nav-tab" onclick="showTool('war')">⚔ War</button>
     <button class="nav-tab" onclick="showTool('base')">🏰 Base</button>
-    <button class="nav-tab" onclick="showTool('magic')">🔮 Magic</button>
+    <button class="nav-tab" onclick="showTool('equip')">⚒️ Equip</button>
     <button class="nav-tab" onclick="showTool('lab')">🧪 Lab</button>
   </div>
 </nav>
@@ -486,15 +486,15 @@ select {
       <div class="tc-name">Base Maxing Guide</div>
       <div class="tc-desc">Smart upgrade priority list aligning with the Chief's Journey</div>
     </div>
-    <div class="tool-card" onclick="showTool('magic')">
-      <div class="tc-icon">🔮</div>
-      <div class="tc-name">Magic Optimizer</div>
-      <div class="tc-desc">Find the true value of Books vs Hammers</div>
+    <div class="tool-card" onclick="showTool('equip')">
+      <div class="tc-icon">⚒️</div>
+      <div class="tc-name">Equip & Ores</div>
+      <div class="tc-desc">Manage Ores & find upgrade paths for Hero Equipment</div>
     </div>
     <div class="tool-card" onclick="showTool('lab')">
       <div class="tc-icon">🧪</div>
       <div class="tc-name">Lab Tracker</div>
-      <div class="tc-desc">Calculate total time & cost left in your Lab</div>
+      <div class="tc-desc">Calculate total time & cost left in your Lab (Gold Pass supported)</div>
     </div>
   </div>
   <div class="bottom-hint">— select a tool above —</div>
@@ -810,43 +810,51 @@ select {
   </div>
 </div>
 
-<div id="page-magic" class="tool-page">
+<div id="page-equip" class="tool-page">
   <div class="page-header">
     <button class="back-btn" onclick="showHome()">← Back</button>
-    <span class="page-title">🔮 Magic Items Optimizer</span>
+    <span class="page-title">⚒️ Equipment & Ores Manager</span>
   </div>
 
   <div class="card">
-    <div class="card-label">Select Magic Item</div>
-    <select id="m-item" style="width:100%; margin-bottom:10px;">
-      <option value="book">Book (Building/Spells/Heroes/Fighting)</option>
-      <option value="hammer">Hammer (Building/Spells/Heroes/Fighting)</option>
-    </select>
-    <div class="boost-note" style="margin-top:0;">Books save <strong>time</strong>. Hammers save <strong>time AND resources</strong>.</div>
+    <div class="card-label">Your Hero Equipment</div>
+    <div class="th-select-wrap" style="margin-bottom:12px;">
+      <label>Select Hero</label>
+      <select id="eq-hero" onchange="eqPopulateEquips()">
+        <option value="bk">Barbarian King</option>
+        <option value="aq">Archer Queen</option>
+        <option value="gw">Grand Warden</option>
+        <option value="rc">Royal Champion</option>
+      </select>
+    </div>
+    <div class="th-select-wrap">
+      <label>Select Equipment to Upgrade</label>
+      <select id="eq-item" onchange="eqCalc()"></select>
+    </div>
   </div>
 
   <div class="card">
-    <div class="card-label">Upgrade Details</div>
-    <div class="time-inputs" style="margin-bottom:12px;">
-      <div class="t-block"><label>Days</label><input type="number" id="m-days" placeholder="0"></div>
-      <div class="t-sep">:</div>
-      <div class="t-block"><label>Hours</label><input type="number" id="m-hours" placeholder="0"></div>
+    <div class="card-label">Upgrade Target</div>
+    <div class="level-row">
+      <label>Current Lvl</label>
+      <input type="number" id="eq-cur" min="1" placeholder="1" oninput="eqCalc()">
     </div>
-    <div class="res-input-block">
-      <label>Resource Cost</label>
-      <input type="number" id="m-cost" placeholder="e.g. 15000000">
+    <div class="level-row">
+      <label>Target Lvl</label>
+      <input type="number" id="eq-tar" min="2" placeholder="Max" oninput="eqCalc()">
     </div>
   </div>
 
-  <div class="err" id="m-err">⚠ Enter time and cost to calculate value.</div>
-  <button class="btn" onclick="magicCalc()">🔮 Calculate Value</button>
-
-  <div class="result-card" id="m-result">
-    <div class="card-label">Value Saved</div>
-    <div class="res-big" id="m-res-big">—</div>
-    <div class="res-rows">
-      <div class="res-row"><span class="rk">Time Saved</span><span class="rv blue" id="m-time-saved">—</span></div>
-      <div class="res-row"><span class="rk">Resources Saved</span><span class="rv green" id="m-res-saved">—</span></div>
+  <div class="result-card show" id="eq-result" style="margin-top:12px">
+    <div class="card-label">Ore Cost & Strategy</div>
+    <div class="ww-total" id="eq-total-cost" style="font-size:1.4rem;">0 Ores</div>
+    <div class="res-rows" style="margin-top:14px">
+      <div class="res-row"><span class="rk">Shiny Ore needed</span><span class="rv blue" id="eq-shiny">—</span></div>
+      <div class="res-row"><span class="rk">Glowy Ore needed</span><span class="rv purple" id="eq-glowy">—</span></div>
+      <div class="res-row"><span class="rk">Starry Ore needed</span><span class="rv gold" id="eq-starry" style="color:var(--gold2)">—</span></div>
+    </div>
+    <div class="boost-note" id="eq-suggestion" style="margin-top:14px; text-align:left;">
+      Select an equipment to see upgrade recommendations.
     </div>
   </div>
 </div>
@@ -858,30 +866,44 @@ select {
   </div>
 
   <div class="card">
-    <div class="card-label">Remaining Upgrades</div>
-    <div class="res-input-block" style="margin-bottom:12px;">
-      <label>Number of Upgrades Left</label>
-      <input type="number" id="l-count" placeholder="0">
-    </div>
-    <div class="res-input-block" style="margin-bottom:12px;">
-      <label>Avg Days per Upgrade</label>
-      <input type="number" id="l-days" placeholder="0">
-    </div>
-    <div class="res-input-block">
-      <label>Avg Cost per Upgrade</label>
-      <input type="number" id="l-cost" placeholder="0">
+    <div class="card-label">Gold Pass Perks</div>
+    <label style="color:var(--text); font-size:.9rem; display:flex; align-items:center; gap:8px; cursor:pointer;">
+      <input type="checkbox" id="l-gp" onchange="labToggleGP()" style="width:16px; height:16px;"> Enable Gold Pass
+    </label>
+    <div id="l-gp-opts" style="display:none; margin-top:12px;">
+      <select id="l-boost" onchange="labUpdateDesc(); labCalc()" style="margin-bottom:8px;">
+        <option value="10">10% Builder Boost</option>
+        <option value="15">15% Builder Boost</option>
+        <option value="20">20% Builder Boost</option>
+      </select>
+      <div class="boost-note" id="l-gp-desc" style="margin-top:0;"></div>
     </div>
   </div>
 
-  <div class="err" id="l-err">⚠ Fill in all fields.</div>
-  <button class="btn" onclick="labCalc()">🧪 Calculate Lab Total</button>
+  <div class="card">
+    <div class="card-label">Troop Upgrade</div>
+    <div class="th-select-wrap" style="margin-bottom:12px;">
+      <label>Select Troop/Spell</label>
+      <select id="l-troop" onchange="labUpdateMax(); labCalc()">
+        </select>
+    </div>
+    <div class="level-row">
+      <label>Current Lvl</label>
+      <input type="number" id="l-cur" min="1" placeholder="1" oninput="labCalc()">
+    </div>
+    <div class="level-row">
+      <label>Target Lvl</label>
+      <input type="number" id="l-tar" min="2" placeholder="Max" oninput="labCalc()">
+    </div>
+  </div>
 
-  <div class="result-card" id="l-result">
-    <div class="card-label">Lab Summary</div>
+  <div class="result-card show" id="l-result" style="margin-top:12px">
+    <div class="card-label">Upgrade Summary</div>
     <div class="res-big" id="l-res-big">—</div>
     <div class="res-rows">
-      <div class="res-row"><span class="rk">Total Time Required</span><span class="rv blue" id="l-total-time">—</span></div>
+      <div class="res-row"><span class="rk">Total Time</span><span class="rv blue" id="l-total-time">—</span></div>
       <div class="res-row"><span class="rk">Total Resource Cost</span><span class="rv purple" id="l-total-cost">—</span></div>
+      <div class="res-row" id="l-row-save" style="display:none"><span class="rk">Gold Pass Savings</span><span class="rv green" id="l-saved">—</span></div>
     </div>
   </div>
 </div>
@@ -903,9 +925,12 @@ function showTool(id) {
   document.querySelectorAll('.tool-page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  const map = {build:1,hero:2,farm:3,war:4,base:5,magic:6,lab:7};
+  const map = {build:1,hero:2,farm:3,war:4,base:5,equip:6,lab:7};
   document.querySelectorAll('.nav-tab')[map[id]].classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+  
+  if(id === 'equip') eqPopulateEquips();
+  if(id === 'lab' && document.getElementById('l-troop').options.length === 0) labInit();
 }
 
 // ═══════════════════════════════════════════
@@ -1252,61 +1277,202 @@ function baseGuide() {
 }
 
 // ═══════════════════════════════════════════
-// MAGIC ITEMS OPTIMIZER
+// EQUIP & ORES MANAGER
 // ═══════════════════════════════════════════
-function magicCalc() {
-  const item = document.getElementById('m-item').value;
-  const days = parseFloat(document.getElementById('m-days').value)||0;
-  const hours = parseFloat(document.getElementById('m-hours').value)||0;
-  const cost = parseFloat(document.getElementById('m-cost').value)||0;
+const EQUIP_DATA = {
+  "bk": [
+    {name:"Barbarian Puppet", tier:"common", cap:18}, {name:"Rage Vial", tier:"common", cap:18}, 
+    {name:"Earthquake Boots", tier:"common", cap:18}, {name:"Vampstache", tier:"common", cap:18},
+    {name:"Giant Gauntlet", tier:"epic", cap:27}, {name:"Spiky Ball", tier:"epic", cap:27}
+  ],
+  "aq": [
+    {name:"Archer Puppet", tier:"common", cap:18}, {name:"Invisibility Vial", tier:"common", cap:18},
+    {name:"Giant Arrow", tier:"common", cap:18}, {name:"Healer Puppet", tier:"common", cap:18},
+    {name:"Frozen Arrow", tier:"epic", cap:27}, {name:"Magic Mirror", tier:"epic", cap:27}
+  ],
+  "gw": [
+    {name:"Eternal Tome", tier:"common", cap:18}, {name:"Life Gem", tier:"common", cap:18},
+    {name:"Rage Gem", tier:"common", cap:18}, {name:"Healing Tome", tier:"common", cap:18},
+    {name:"Fireball", tier:"epic", cap:27}
+  ],
+  "rc": [
+    {name:"Royal Gem", tier:"common", cap:18}, {name:"Seeking Shield", tier:"common", cap:18},
+    {name:"Haste Vial", tier:"common", cap:18}, {name:"Hog Rider Puppet", tier:"common", cap:18},
+    {name:"Rocket Spear", tier:"epic", cap:27}
+  ]
+};
 
-  const err = document.getElementById('m-err');
-  const res = document.getElementById('m-result');
-  err.classList.remove('show'); res.classList.remove('show');
+// Extrapolated cumulative costs for simplicity
+function getOreCost(tier, curLv, tarLv) {
+  let s=0, g=0, st=0;
+  for(let i=curLv; i<tarLv; i++) {
+    s += (i*120 + 120); 
+    if(i%3===0) g += (i*10 + 20);
+    if(tier==='epic' && i%3===0 && i>=9) st += (i*2); 
+  }
+  return {shiny: s, glowy: g, starry: st};
+}
 
-  if((days===0 && hours===0) || cost===0) { err.classList.add('show'); return; }
+function eqPopulateEquips() {
+  const h = document.getElementById('eq-hero').value;
+  const sel = document.getElementById('eq-item');
+  sel.innerHTML = '';
+  EQUIP_DATA[h].forEach((eq, idx) => {
+    sel.options.add(new Option(`${eq.name} (${eq.tier.toUpperCase()})`, idx));
+  });
+  document.getElementById('eq-cur').value = '';
+  document.getElementById('eq-tar').value = '';
+  document.getElementById('eq-result').classList.remove('show');
+}
 
-  const totalSecs = days*86400 + hours*3600;
+function eqCalc() {
+  const h = document.getElementById('eq-hero').value;
+  const idx = document.getElementById('eq-item').value;
+  if(idx === '') return;
   
-  document.getElementById('m-time-saved').textContent = fmt(totalSecs);
+  const eq = EQUIP_DATA[h][idx];
+  let cur = parseInt(document.getElementById('eq-cur').value) || 1;
+  let tar = parseInt(document.getElementById('eq-tar').value) || eq.cap;
   
-  if(item === 'book') {
-    document.getElementById('m-res-big').textContent = "Time Skipped!";
-    document.getElementById('m-res-saved').textContent = "0 (Books don't save resources)";
-    document.getElementById('m-res-saved').className = "rv red";
+  if(cur < 1) cur = 1;
+  if(tar > eq.cap) tar = eq.cap;
+  if(cur >= tar) return;
+  
+  const cost = getOreCost(eq.tier, cur, tar);
+  
+  document.getElementById('eq-shiny').textContent = cost.shiny.toLocaleString();
+  document.getElementById('eq-glowy').textContent = cost.glowy.toLocaleString();
+  
+  if(eq.tier === 'epic') {
+    document.getElementById('eq-starry').textContent = cost.starry.toLocaleString();
   } else {
-    document.getElementById('m-res-big').textContent = "Max Value!";
-    document.getElementById('m-res-saved').textContent = fmtNum(cost);
-    document.getElementById('m-res-saved').className = "rv green";
+    document.getElementById('eq-starry').textContent = "0 (Common item)";
   }
   
-  res.classList.add('show');
-  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.getElementById('eq-total-cost').textContent = `Levels ${cur} ➔ ${tar}`;
+  
+  let suggestion = "";
+  if(eq.name === "Giant Gauntlet" || eq.name === "Eternal Tome" || eq.name === "Frozen Arrow") {
+    suggestion = `<strong>Top Tier Pick:</strong> ${eq.name} is considered best-in-slot for competitive attacks. Prioritize your Ores here immediately.`;
+  } else if(eq.tier === "epic") {
+    suggestion = `<strong>Epic Investment:</strong> Save your Starry Ores carefully. ${eq.name} scales heavily at levels 18, 21, and 27.`;
+  } else {
+    suggestion = `<strong>Common Item:</strong> Try to park ${eq.name} at level 12 or 15 to save Glowy Ores for your Epic equipment unless this is your main strategy.`;
+  }
+  document.getElementById('eq-suggestion').innerHTML = suggestion;
+  document.getElementById('eq-result').classList.add('show');
 }
 
 // ═══════════════════════════════════════════
 // LAB PROGRESS TRACKER
 // ═══════════════════════════════════════════
+const LAB_TROOPS = [
+  {name: "Barbarian", max: 13, baseTime: 86400, baseCost: 500000},
+  {name: "Archer", max: 13, baseTime: 90000, baseCost: 600000},
+  {name: "Giant", max: 12, baseTime: 120000, baseCost: 800000},
+  {name: "Goblin", max: 10, baseTime: 100000, baseCost: 700000},
+  {name: "Wall Breaker", max: 12, baseTime: 130000, baseCost: 900000},
+  {name: "Balloon", max: 11, baseTime: 150000, baseCost: 1000000},
+  {name: "Wizard", max: 12, baseTime: 160000, baseCost: 1200000},
+  {name: "Healer", max: 9, baseTime: 180000, baseCost: 1500000},
+  {name: "Dragon", max: 11, baseTime: 250000, baseCost: 2000000},
+  {name: "P.E.K.K.A", max: 10, baseTime: 280000, baseCost: 2500000},
+  {name: "Electro Dragon", max: 7, baseTime: 400000, baseCost: 4000000},
+  {name: "Yeti", max: 5, baseTime: 500000, baseCost: 5000000},
+  {name: "Root Rider", max: 4, baseTime: 600000, baseCost: 6000000},
+  {name: "Minion", max: 12, baseTime: 100000, baseCost: 20000},
+  {name: "Hog Rider", max: 13, baseTime: 120000, baseCost: 30000},
+  {name: "Valkyrie", max: 11, baseTime: 150000, baseCost: 40000},
+  {name: "Golem", max: 13, baseTime: 200000, baseCost: 50000},
+  {name: "Witch", max: 7, baseTime: 250000, baseCost: 60000},
+  {name: "Lava Hound", max: 6, baseTime: 300000, baseCost: 70000},
+  {name: "Bowler", max: 7, baseTime: 350000, baseCost: 80000}
+];
+
+function labInit() {
+  const sel = document.getElementById('l-troop');
+  sel.innerHTML = '';
+  LAB_TROOPS.forEach((t, i) => {
+    sel.options.add(new Option(`${t.name} (Max: ${t.max})`, i));
+  });
+  labUpdateDesc();
+}
+
+function labUpdateMax() {
+  document.getElementById('l-cur').value = '';
+  document.getElementById('l-tar').value = '';
+}
+
+function labToggleGP() {
+  const isEnabled = document.getElementById('l-gp').checked;
+  document.getElementById('l-gp-opts').style.display = isEnabled ? 'block' : 'none';
+  labUpdateDesc();
+  labCalc();
+}
+
+function labUpdateDesc() {
+  const isEnabled = document.getElementById('l-gp').checked;
+  const boost = document.getElementById('l-boost').value;
+  const descEl = document.getElementById('l-gp-desc');
+  
+  if(!isEnabled) {
+    descEl.textContent = "";
+    return;
+  }
+  
+  descEl.textContent = `Get a ${boost}% time and resource discount on buildings and upgrades. Crafting in the Forge requires ${boost}% less time and resources. Claim this perk with Gold Pass!`;
+}
+
+// Extrapolated functional curve for troop maxing
+function getLabCostAndTime(troopIdx, curLv, tarLv) {
+  const t = LAB_TROOPS[troopIdx];
+  let time = 0, cost = 0;
+  for(let i=curLv; i<tarLv; i++) {
+    // Exponential curve mimicking CoC mechanics capped at ~16 days
+    time += Math.min(t.baseTime * Math.pow(1.3, i), 1382400); 
+    cost += Math.min(t.baseCost * Math.pow(1.2, i), 22000000);
+  }
+  return {time, cost};
+}
+
 function labCalc() {
-  const count = parseFloat(document.getElementById('l-count').value)||0;
-  const days = parseFloat(document.getElementById('l-days').value)||0;
-  const cost = parseFloat(document.getElementById('l-cost').value)||0;
-
-  const err = document.getElementById('l-err');
-  const res = document.getElementById('l-result');
-  err.classList.remove('show'); res.classList.remove('show');
-
-  if(count===0 || days===0 || cost===0) { err.classList.add('show'); return; }
-
-  const totalSecs = count * days * 86400;
-  const totalCost = count * cost;
-
-  document.getElementById('l-res-big').textContent = count + " Upgrades";
-  document.getElementById('l-total-time').textContent = fmt(totalSecs);
-  document.getElementById('l-total-cost').textContent = fmtNum(totalCost);
-
-  res.classList.add('show');
-  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const idx = document.getElementById('l-troop').value;
+  if(idx === '') return;
+  
+  const t = LAB_TROOPS[idx];
+  let cur = parseInt(document.getElementById('l-cur').value) || 1;
+  let tar = parseInt(document.getElementById('l-tar').value) || t.max;
+  
+  if(cur < 1) cur = 1;
+  if(tar > t.max) tar = t.max;
+  if(cur >= tar) {
+    document.getElementById('l-result').classList.remove('show');
+    return;
+  }
+  
+  const isGP = document.getElementById('l-gp').checked;
+  const boostPct = isGP ? parseInt(document.getElementById('l-boost').value) : 0;
+  const multiplier = 1 - (boostPct / 100);
+  
+  const base = getLabCostAndTime(idx, cur, tar);
+  
+  const finalTime = base.time * multiplier;
+  const finalCost = base.cost * multiplier;
+  
+  document.getElementById('l-res-big').textContent = `${t.name} (Lv ${cur} ➔ ${tar})`;
+  document.getElementById('l-total-time').textContent = fmt(finalTime);
+  document.getElementById('l-total-cost').textContent = fmtNum(Math.round(finalCost));
+  
+  if(isGP) {
+    const savedTime = base.time - finalTime;
+    const savedCost = base.cost - finalCost;
+    document.getElementById('l-saved').innerHTML = `Saved ${fmt(savedTime)} <br>& ${fmtNum(Math.round(savedCost))} resources!`;
+    document.getElementById('l-row-save').style.display = 'flex';
+  } else {
+    document.getElementById('l-row-save').style.display = 'none';
+  }
+  
+  document.getElementById('l-result').classList.add('show');
 }
 </script>
 </body>
