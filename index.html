@@ -519,6 +519,11 @@ select {
       <div class="tc-name">Base Maxing Guide</div>
       <div class="tc-desc">Smart upgrade priority list aligning with the Chief's Journey</div>
     </div>
+    <div class="tool-card" onclick="showTool('planner')">
+  <div class="tc-icon">🧠</div>
+  <div class="tc-name">Upgrade Planner</div>
+  <div class="tc-desc">Smart upgrade suggestions using player data</div>
+    </div>
     <div class="tool-card" onclick="showTool('equip')">
       <div class="tc-icon">⚒️</div>
       <div class="tc-name">Equip & Ores</div>
@@ -886,7 +891,25 @@ select {
     </div>
   </div>
 </div>
+<div id="page-planner" class="tool-page">
+  <div class="page-header">
+    <button class="back-btn" onclick="showHome()">← Back</button>
+    <span class="page-title">🧠 Upgrade Planner</span>
+  </div>
 
+  <div class="card">
+    <div class="card-label">Player Tag</div>
+    <input type="text" id="planner-tag" placeholder="#ABC123">
+  </div>
+
+  <button class="btn" onclick="plannerFetch()">⚔ Generate Plan</button>
+
+  <div class="result-card" id="planner-result">
+    <div class="card-label">Upgrade Plan</div>
+    <div class="res-big" id="planner-name">—</div>
+    <div class="res-rows" id="planner-list"></div>
+  </div>
+</div>
 </main>
 
 <script>
@@ -914,7 +937,7 @@ function showHome() {
 }
 
 function showTool(id) {
-  const map = {build:1,hero:2,farm:3,war:4,base:5,equip:6};
+  const map = {build:1,hero:2,farm:3,war:4,base:5,equip:6,planner:7};
   setActivePage('page-'+id, map[id]);
   window.scrollTo({top:0,behavior:'smooth'});
 
@@ -1350,7 +1373,65 @@ function eqCalc() {
   document.getElementById('eq-suggestion').innerHTML = suggestion;
   document.getElementById('eq-result').classList.add('show');
 }
+// ═══════════════════════════════════════════
+// UPGRADE PLANNER
+// ═══════════════════════════════════════════
+async function plannerFetch() {
+  const tag = document.getElementById("planner-tag").value;
+  const resBox = document.getElementById("planner-result");
+  const nameEl = document.getElementById("planner-name");
+  const listEl = document.getElementById("planner-list");
 
+  resBox.classList.remove("show");
+  listEl.innerHTML = "Loading...";
+
+  try {
+    const res = await fetch(`/api/player?tag=${tag}`);
+    const data = await res.json();
+
+    if (data.error) {
+      listEl.innerHTML = `<div class="rv red">${data.error}</div>`;
+      resBox.classList.add("show");
+      return;
+    }
+
+    nameEl.textContent = `${data.name} (TH ${data.townHall})`;
+
+    let suggestions = [];
+
+    const heroes = data.heroes || [];
+    let h = {};
+    heroes.forEach(x => h[x.name] = x.level);
+
+    if (!h["Archer Queen"] || h["Archer Queen"] < 75)
+      suggestions.push("🏹 Upgrade Archer Queen first");
+
+    if (!h["Barbarian King"] || h["Barbarian King"] < 75)
+      suggestions.push("👑 Upgrade Barbarian King");
+
+    if (data.townHall >= 11 && (!h["Grand Warden"] || h["Grand Warden"] < 50))
+      suggestions.push("🔵 Upgrade Grand Warden");
+
+    if (data.townHall >= 13 && (!h["Royal Champion"] || h["Royal Champion"] < 25))
+      suggestions.push("⚡ Upgrade Royal Champion");
+
+    if (suggestions.length === 0)
+      suggestions.push("🔥 Base is well balanced. Focus on defenses & pets.");
+
+    listEl.innerHTML = suggestions.map(s => `
+      <div class="res-row">
+        <span class="rk">Recommendation</span>
+        <span class="rv">${s}</span>
+      </div>
+    `).join("");
+
+    resBox.classList.add("show");
+
+  } catch (e) {
+    listEl.innerHTML = `<div class="rv red">API Error</div>`;
+    resBox.classList.add("show");
+  }
+}
 </script>
 </body>
 </html>
