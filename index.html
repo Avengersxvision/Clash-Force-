@@ -1474,6 +1474,26 @@ function labCalc() {
   
   document.getElementById('l-result').classList.add('show');
 }
+  <input type="text" id="tag" placeholder="#ABC123">
+<button onclick="getPlayer()">Get Player</button>
+
+<div id="result"></div>
+
+<script>
+async function getPlayer() {
+  const tag = document.getElementById("tag").value;
+
+  const res = await fetch(`/api/player?tag=${tag}`);
+  const data = await res.json();
+
+  if (data.error) {
+    document.getElementById("result").innerText = data.error;
+    return;
+  }
+
+  document.getElementById("result").innerText =
+    `Name: ${data.name}, TH: ${data.townHall}`;
+}
 </script>
 </body>
 </html>
